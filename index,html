@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кира сайт</title>
+    <!-- Google Font & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        /* анимированный RGB-градиент — медленный 40с */
+        .rgb-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+            background-size: 1800% 1800%;
+            animation: rgbShift 40s ease infinite;
+            opacity: 0.6;
+            filter: blur(40px);
+        }
+
+        @keyframes rgbShift {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-radial-gradient(circle at 30% 40%, rgba(255,255,255,0.03) 0px, transparent 1px);
+            pointer-events: none;
+            z-index: 20;
+            mix-blend-mode: overlay;
+            opacity: 0.3;
+        }
+
+        /* все элементы поверх фона */
+        .top-left {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            z-index: 30;
+            background: rgba(18, 22, 35, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 60px;
+            padding: 0.8rem 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .top-right {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 30;
+            background: rgba(18, 22, 35, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 60px;
+            padding: 0.8rem 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .top-center {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 30;
+            background: rgba(18, 22, 35, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 60px;
+            padding: 0.5rem 1.2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .center-name {
+            position: fixed;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 30;
+            text-align: center;
+            width: auto;
+            white-space: nowrap;
+            text-shadow: 0 0 30px black, 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        /* ОБНОВЛЁННЫЙ БЛОК "ОБО МНЕ" — текст с именем Кира, опущен ниже */
+        .about-me {
+            position: fixed;
+            top: 48%; /* опустил ниже, было 40% */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 30;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 40px;
+            padding: 1.5rem 2rem;
+            max-width: 550px;
+            width: 85%;
+            text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            color: white;
+            font-size: 1rem;
+            line-height: 1.6;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .about-me i {
+            color: #ffd966;
+            margin-right: 8px;
+        }
+
+        .about-me p {
+            margin-top: 0.8rem;
+        }
+
+        .bottom-left {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 30;
+            background: rgba(18, 22, 35, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 60px;
+            padding: 0.8rem 1.8rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .bottom-right {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 30;
+            background: rgba(18, 22, 35, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 60px;
+            padding: 0.8rem 1.8rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .bottom-center {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 30;
+            background: rgba(18, 22, 35, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 60px;
+            padding: 0.8rem 1.8rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            white-space: nowrap;
+            font-size: 1rem;
+            color: #ddd;
+        }
+
+        .bottom-center i {
+            color: #f472b6;
+            margin-right: 5px;
+        }
+
+        .bottom-left:hover, .bottom-right:hover, .bottom-center:hover {
+            border-color: #fff;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255,255,255,0.5);
+        }
+        .bottom-center:hover {
+            transform: translateX(-50%) scale(1.05);
+        }
+
+        .mini-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .mini-link {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: white;
+            text-decoration: none;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: 0.2s;
+        }
+
+        .mini-link:hover {
+            transform: translateY(-5px);
+            border-color: white;
+            box-shadow: 0 10px 20px rgba(255,255,255,0.3);
+        }
+
+        .telegram-mini i { color: #24A1DE; }
+        .youtube-mini i { color: #FF0000; }
+        .steam-mini i { color: #1b9bc7; }
+
+        .datetime {
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: white;
+        }
+
+        .date {
+            font-size: 0.9rem;
+            color: #e0e0e0;
+        }
+
+        .weather {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .weather i {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.5));
+        }
+
+        .weather-temp {
+            font-weight: 700;
+            font-size: 1.7rem;
+        }
+
+        .weather-desc {
+            color: #e0e0e0;
+        }
+
+        .weather-city {
+            background: rgba(255,255,255,0.1);
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, #ffe0f0, #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(0,0,0,0.7), 0 0 60px rgba(255,255,255,0.3);
+            line-height: 1;
+        }
+
+        .nick {
+            font-size: 1.3rem;
+            color: white;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.4rem 1.5rem;
+            border-radius: 40px;
+            display: inline-block;
+            border: 1px solid rgba(255,255,255,0.3);
+            margin-top: 0.5rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        .info-item i {
+            font-size: 1.8rem;
+            color: #ffb3b3;
+            filter: drop-shadow(0 0 6px #ff69b4);
+        }
+
+        /* МИНИ-СООБЩЕНИЕ (тост) — УМЕНЬШЕННЫЙ РАЗМЕР */
+        .toast-message {
+            position: fixed;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            background: rgba(20, 25, 40, 0.85);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 40px; /* чуть меньше скругление */
+            padding: 0.5rem 1.5rem; /* уменьшил паддинг */
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 30px rgba(255,215,0,0.3);
+            color: white;
+            font-size: 0.9rem; /* уменьшил шрифт */
+            text-align: center;
+            white-space: nowrap;
+            max-width: 80%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            line-height: 1.4;
+        }
+
+        .toast-message.show {
+            opacity: 1;
+        }
+
+        .toast-message i {
+            color: gold;
+            margin-right: 6px;
+            font-size: 0.9rem;
+        }
+
+        /* модальное окно */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 300;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: rgba(18, 22, 35, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2.5rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 30px #ec4899;
+            color: white;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f0f, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #f472b6;
+            font-size: 2.2rem;
+            cursor: pointer;
+            transition: 0.2s;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .game-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 1.5rem;
+            padding: 1rem 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.2s;
+            backdrop-filter: blur(5px);
+        }
+
+        .game-card:hover {
+            border-color: #f0f;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px #a855f7;
+        }
+
+        .game-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #f0f;
+            filter: drop-shadow(0 0 8px #ec4899);
+        }
+
+        .game-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        @media (max-width: 700px) {
+            h1 { font-size: 3.5rem; }
+            .top-left, .top-right, .bottom-left, .bottom-right, .bottom-center { padding: 0.6rem 1.2rem; }
+            .weather { flex-wrap: wrap; justify-content: center; }
+            .center-name { top: 20%; }
+            .about-me { top: 48%; width: 90%; padding: 1.2rem; font-size: 0.95rem; }
+            .toast-message { top: 100px; font-size: 0.8rem; padding: 0.4rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="rgb-bg"></div>
+    <div class="overlay"></div>
+    <div class="noise"></div>
+
+    <!-- Верхний левый угол: часы -->
+    <div class="top-left">
+        <div class="datetime" id="clock">--:--:--</div>
+        <div class="date" id="date">...</div>
+    </div>
+
+    <!-- Верхний правый угол: погода -->
+    <div class="top-right">
+        <div class="weather" id="weatherBlock">
+            <i class="fas fa-spinner fa-pulse" id="weatherIcon"></i>
+            <span class="weather-temp" id="weatherTemp">--°C</span>
+            <span class="weather-desc" id="weatherDesc">загрузка...</span>
+            <span class="weather-city" id="weatherCity">Москва</span>
+        </div>
+    </div>
+
+    <!-- Верхний центр: мини-ссылки -->
+    <div class="top-center">
+        <div class="mini-links">
+            <a href="https://t.me/Kiravi132" target="_blank" class="mini-link telegram-mini" rel="noopener noreferrer">
+                <i class="fab fa-telegram"></i>
+            </a>
+            <a href="https://www.youtube.com/@Kirachka132" target="_blank" class="mini-link youtube-mini" rel="noopener noreferrer">
+                <i class="fab fa-youtube"></i>
+            </a>
+            <a href="https://steamcommunity.com/id/Kiravi132/" target="_blank" class="mini-link steam-mini" rel="noopener noreferrer">
+                <i class="fab fa-steam"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Центр: имя (поднято выше) -->
+    <div class="center-name">
+        <h1>Kira</h1>
+        <div class="nick">
+            <i class="fa-regular fa-cat"></i> @kiravi132
+        </div>
+    </div>
+
+    <!-- ОБНОВЛЁННЫЙ БЛОК "ОБО МНЕ" с именем Кира, опущен ниже -->
+    <div class="about-me">
+        <i class="fa-regular fa-hand-wave"></i> <strong>Привет! Я Кира</strong> — разработчик с фокусом на современных технологиях и киберспорте.
+        <p>Специализируюсь на создании инновационных решений в веб-разработке и игровой индустрии. Мой подход сочетает техническую экспертизу с глубоким пониманием пользовательского опыта, особенно в гейминг-среде.</p>
+        <p>Как киберспортсмен, я понимаю важность производительности, отзывчивости и эстетики в цифровых продуктах.</p>
+    </div>
+
+    <!-- Нижний левый: разработчик -->
+    <div class="bottom-left" id="devBlock">
+        <div class="info-item"><i class="fa-solid fa-laptop-code"></i> разработчик</div>
+    </div>
+
+    <!-- Нижний правый: люблю играть (кликабельный) -->
+    <div class="bottom-right" id="openGames">
+        <div class="info-item"><i class="fa-solid fa-gamepad"></i> люблю играть</div>
+    </div>
+
+    <!-- Нижний центр: информация о коде -->
+    <div class="bottom-center">
+        <i class="fa-regular fa-code"></i> ✦ kira/code · v2.0 ✦ <i class="fa-regular fa-heart"></i>
+    </div>
+
+    <!-- МИНИ-СООБЩЕНИЕ (тост) — УМЕНЬШЕННЫЙ РАЗМЕР -->
+    <div class="toast-message" id="welcomeToast">
+        <i class="fa-regular fa-star"></i> # Добро пожаловать! Добро пожаловать на сайт Kira! Я ценю ваш визит и буду рад отзывам.
+    </div>
+
+    <!-- Модальное окно списка игр -->
+    <div class="modal-overlay" id="gamesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>🎮 мои игры</span>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="games-grid" id="gamesGrid">
+                <!-- будет заполнено скриптом -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ЧАСЫ
+            function updateDateTime() {
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const dateStr = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+                document.getElementById('clock').textContent = timeStr;
+                document.getElementById('date').textContent = dateStr;
+            }
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+
+            // ПОГОДА
+            const weatherIconEl = document.getElementById('weatherIcon');
+            const weatherTempEl = document.getElementById('weatherTemp');
+            const weatherDescEl = document.getElementById('weatherDesc');
+            const weatherCityEl = document.getElementById('weatherCity');
+
+            const weatherCodes = {
+                0: 'ясно', 1: 'преим. ясно', 2: 'переменная облачность', 3: 'облачно',
+                45: 'туман', 48: 'туман', 51: 'морось', 53: 'морось', 55: 'морось',
+                61: 'дождь', 63: 'дождь', 65: 'дождь', 71: 'снег', 73: 'снег', 75: 'снег',
+                80: 'ливень', 81: 'ливень', 82: 'ливень', 95: 'гроза', 96: 'гроза', 99: 'гроза'
+            };
+
+            function getWeatherDescription(code) {
+                return weatherCodes[code] || 'неизвестно';
+            }
+
+            function getWeatherIcon(code) {
+                if (code === 0) return 'fa-sun';
+                if (code === 1 || code === 2) return 'fa-cloud-sun';
+                if (code === 3) return 'fa-cloud';
+                if (code >= 45 && code <= 48) return 'fa-smog';
+                if ((code >= 51 && code <= 55) || (code >= 61 && code <= 65)) return 'fa-cloud-rain';
+                if (code >= 71 && code <= 75) return 'fa-snowflake';
+                if (code >= 80 && code <= 82) return 'fa-cloud-showers-heavy';
+                if (code >= 95) return 'fa-cloud-bolt';
+                return 'fa-question';
+            }
+
+            async function fetchWeather() {
+                try {
+                    const lat = 55.75;
+                    const lon = 37.62;
+                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    if (data.current_weather) {
+                        const temp = data.current_weather.temperature;
+                        const code = data.current_weather.weathercode;
+                        const description = getWeatherDescription(code);
+                        const iconClass = getWeatherIcon(code);
+
+                        weatherTempEl.textContent = Math.round(temp) + '°C';
+                        weatherDescEl.textContent = description;
+                        weatherIconEl.className = `fas ${iconClass}`;
+                        weatherCityEl.textContent = 'Москва';
+                    } else {
+                        throw new Error('Нет данных');
+                    }
+                } catch (e) {
+                    weatherDescEl.textContent = 'погода не доступна';
+                    weatherIconEl.className = 'fas fa-exclamation-triangle';
+                }
+            }
+            fetchWeather();
+
+            // СПИСОК ИГР
+            const gamesList = [
+                "PUBG: BATTLEGROUNDS",
+                "Blender",
+                "Counter-Strike 2",
+                "Men of War: Assault Squad 2",
+                "PUBG: BLINDSPOT",
+                "Soundpad",
+                "The Escapists 2",
+                "Wallpaper Engine"
+            ];
+
+            function getGameIcon(name) {
+                if (name.includes("PUBG") || name.includes("Counter")) return 'fa-crosshairs';
+                if (name.includes("Blender")) return 'fa-cubes';
+                if (name.includes("Men of War")) return 'fa-tank';
+                if (name.includes("Soundpad")) return 'fa-headphones';
+                if (name.includes("Escapists")) return 'fa-person-running';
+                if (name.includes("Wallpaper")) return 'fa-image';
+                return 'fa-gamepad';
+            }
+
+            const gamesGrid = document.getElementById('gamesGrid');
+            gamesList.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                const iconClass = getGameIcon(game);
+                card.innerHTML = `
+                    <i class="fas ${iconClass} game-icon"></i>
+                    <div class="game-name">${game}</div>
+                `;
+                gamesGrid.appendChild(card);
+            });
+
+            // МОДАЛКА
+            const openGamesBtn = document.getElementById('openGames');
+            const modal = document.getElementById('gamesModal');
+            const closeBtn = document.getElementById('closeModal');
+
+            openGamesBtn.addEventListener('click', () => {
+                modal.classList.add('show');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('show');
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+
+            // ТОСТ (приветственное сообщение) – появляется через 0.1с и исчезает через 5с
+            const toast = document.getElementById('welcomeToast');
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 5100); // 5 секунд + небольшой запас
+
+            // двойной клик по имени для эффекта
+            const title = document.querySelector('h1');
+            title.addEventListener('dblclick', () => {
+                title.style.transition = '0.3s';
+                title.style.textShadow = '0 0 30px #fff, 0 0 60px #f0f';
+                setTimeout(() => {
+                    title.style.textShadow = '0 0 30px rgba(0,0,0,0.7), 0 0 60px rgba(255,255,255,0.3)';
+                }, 400);
+            });
+        })();
+    </script>
+</body>
+</html>
