@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kira-txt · расписание</title>
+    <style>
+        /* Светлая тема (по умолчанию) */
+        :root {
+            --bg-gradient: linear-gradient(145deg, #f0f2f5 0%, #e0e4e9 100%);
+            --container-bg: rgba(255, 255, 255, 0.75);
+            --text-primary: #1d1127;
+            --text-secondary: #4a3f5c;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-border: rgba(255, 255, 255, 0.9);
+            --input-bg: white;
+            --input-border: #e0d0f0;
+            --shadow-color: rgba(0, 0, 0, 0.15);
+            --accent: #b380ff;
+            --accent-light: #d9c9ff;
+            --btn-primary: linear-gradient(115deg, #d9c9ff, #b692ff);
+            --btn-primary-hover: linear-gradient(115deg, #c7b0ff, #a57cff);
+            --btn-secondary: rgba(255, 255, 240, 0.8);
+        }
+
+        /* Тёмная тема */
+        body.dark-theme {
+            --bg-gradient: linear-gradient(145deg, #1e1e2f, #2a2538);
+            --container-bg: rgba(30, 30, 40, 0.85);
+            --text-primary: #f0eaff;
+            --text-secondary: #cbbde2;
+            --card-bg: rgba(50, 45, 60, 0.8);
+            --card-border: #4a3f5c;
+            --input-bg: #2d2638;
+            --input-border: #5e4e73;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --accent: #a57cff;
+            --accent-light: #5e4e73;
+            --btn-primary: linear-gradient(115deg, #6b4f9c, #8a6ac8);
+            --btn-primary-hover: linear-gradient(115deg, #7b5fb0, #9a7ad8);
+            --btn-secondary: #3a3148;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background 0.3s;
+        }
+
+        .kira-container {
+            max-width: 1100px;
+            width: 100%;
+            background: var(--container-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 48px;
+            padding: 32px;
+            box-shadow: 0 20px 40px var(--shadow-color), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--card-border);
+        }
+
+        /* Шапка с переключателем темы */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            border-radius: 40px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            transition: 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-light);
+        }
+
+        /* Меню-вкладки */
+        .tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 28px;
+            border-bottom: 2px solid var(--accent-light);
+            padding-bottom: 8px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 10px 24px;
+            border-radius: 40px 40px 0 0;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-light);
+            color: var(--text-primary);
+            border-color: var(--accent);
+            border-bottom-color: transparent;
+        }
+
+        /* Страницы (контент вкладок) */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Форма добавления */
+        .event-form {
+            background: var(--card-bg);
+            border-radius: 40px;
+            padding: 26px 24px;
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--card-border);
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 1 1 160px;
+            min-width: 140px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        input, select, button {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 40px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            width: 100%;
+            outline: none;
+            transition: 0.15s;
+            color: var(--text-primary);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(179, 128, 255, 0.2);
+        }
+
+        button {
+            background: var(--btn-primary);
+            border: none;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            box-shadow: 0 4px 10px var(--shadow-color);
+            transition: 0.15s;
+            border: 1px solid var(--card-border);
+            flex: 0 1 auto;
+            min-width: 140px;
+        }
+
+        button:hover {
+            background: var(--btn-primary-hover);
+            box-shadow: 0 8px 16px var(--shadow-color);
+            transform: scale(1.02);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: var(--btn-secondary);
+            box-shadow: none;
+            color: var(--text-primary);
+            border: 1px solid var(--input-border);
+        }
+
+        /* Список событий (мини-блоки) */
+        .events-container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .day-group {
+            background: var(--card-bg);
+            border-radius: 32px;
+            padding: 16px 20px;
+            border: 1px solid var(--card-border);
+        }
+
+        .day-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 12px;
+            padding-left: 8px;
+        }
+
+        .mini-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .event-mini-card {
+            background: var(--input-bg);
+            border-radius: 20px;
+            padding: 14px 16px;
+            border: 1px solid var(--input-border);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: 0.1s;
+        }
+
+        .event-mini-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        .event-mini-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+
+        .event-mini-time {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .event-mini-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .event-mini-actions button {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1px solid var(--input-border);
+            font-size: 1.1rem;
+            min-width: auto;
+            box-shadow: none;
+        }
+
+        .event-mini-actions button:hover {
+            background: var(--accent-light);
+        }
+
+        .empty-message {
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+            padding: 40px 20px;
+            background: var(--card-bg);
+            border-radius: 50px;
+        }
+
+        .clear-btn {
+            background: #ffd1df;
+            color: #a0436b;
+            border: 1px solid #ffb3c6;
+        }
+
+        .dark-theme .clear-btn {
+            background: #5a3e4a;
+            color: #ffc0d0;
+            border-color: #a0436b;
+        }
+
+        footer {
+            margin-top: 24px;
+            text-align: right;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+<div class="kira-container">
+    <div class="header">
+        <h1>Kira-txt · расписание</h1>
+        <button class="theme-toggle" id="themeToggle">🌙 Тёмная</button>
+    </div>
+
+    <!-- Меню-вкладки -->
+    <div class="tabs">
+        <button class="tab-btn active" data-page="add">➕ Добавить событие</button>
+        <button class="tab-btn" data-page="list">📅 Расписание</button>
+    </div>
+
+    <!-- Страница добавления события -->
+    <div id="pageAdd" class="page active">
+        <div class="event-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Название</label>
+                    <input type="text" id="eventTitle" placeholder="например: Йога / Митинг" maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label>День</label>
+                    <select id="eventDay">
+                        <option value="0">Воскресенье</option>
+                        <option value="1">Понедельник</option>
+                        <option value="2">Вторник</option>
+                        <option value="3">Среда</option>
+                        <option value="4">Четверг</option>
+                        <option value="5">Пятница</option>
+                        <option value="6">Суббота</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Начало</label>
+                    <input type="time" id="eventStart" value="09:00">
+                </div>
+                <div class="form-group">
+                    <label>Конец (необяз.)</label>
+                    <input type="time" id="eventEnd">
+                </div>
+            </div>
+            <div class="button-group">
+                <button id="addEventBtn">➕ Добавить событие</button>
+                <button id="updateEventBtn" style="display: none;">✅ Обновить</button>
+                <button id="cancelEditBtn" class="btn-secondary" style="display: none;">Отмена</button>
+                <button id="clearAllBtn" class="clear-btn">🧹 Очистить всё</button>
+            </div>
+        </div>
+        <p style="color: var(--text-secondary); margin-top: 8px;">✨ Здесь можно добавить или отредактировать событие</p>
+    </div>
+
+    <!-- Страница расписания (мини-блоки) -->
+    <div id="pageList" class="page">
+        <div id="eventsList" class="events-container">
+            <!-- будет заполнено динамически -->
+        </div>
+    </div>
+
+    <footer>kira-txt · уведомления за 10 мин до начала</footer>
+</div>
+
+<script>
+    (function() {
+        // ==================== КОНСТАНТЫ И СОСТОЯНИЕ ====================
+        const STORAGE_KEY = 'kiraSchedule';
+        const THEME_KEY = 'kiraTheme';
+
+        let schedule = [];
+        let editingId = null;
+        const notifiedToday = new Map(); // eventId -> дата (YYYY-MM-DD)
+
+        // Элементы
+        const titleInput = document.getElementById('eventTitle');
+        const daySelect = document.getElementById('eventDay');
+        const startInput = document.getElementById('eventStart');
+        const endInput = document.getElementById('eventEnd');
+        const addBtn = document.getElementById('addEventBtn');
+        const updateBtn = document.getElementById('updateEventBtn');
+        const cancelBtn = document.getElementById('cancelEditBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const eventsContainer = document.getElementById('eventsList');
+        const pageAdd = document.getElementById('pageAdd');
+        const pageList = document.getElementById('pageList');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const themeToggle = document.getElementById('themeToggle');
+
+        // ==================== ЗАГРУЗКА / СОХРАНЕНИЕ ====================
+        function loadSchedule() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    schedule = JSON.parse(stored);
+                    // обеспечить наличие id у старых записей
+                    schedule = schedule.map(ev => ({ ...ev, id: ev.id || crypto.randomUUID?.() || Date.now() + '-' + Math.random() }));
+                } catch (e) {
+                    schedule = [];
+                }
+            } else {
+                // Примеры для первого запуска
+                schedule = [
+                    { id: '1', title: 'Планёрка', day: 1, start: '10:00', end: '10:30' },
+                    { id: '2', title: 'Обед', day: 1, start: '13:00', end: '13:45' },
+                    { id: '3', title: 'Тренировка', day: 3, start: '18:30', end: '19:30' },
+                ];
+            }
+            renderEvents();
+            saveSchedule();
+        }
+
+        function saveSchedule() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(schedule));
+        }
+
+        // ==================== ТЁМНАЯ ТЕМА ====================
+        function loadTheme() {
+            const savedTheme = localStorage.getItem(THEME_KEY);
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                themeToggle.textContent = '☀️ Светлая';
+            } else {
+                document.body.classList.remove('dark-theme');
+                themeToggle.textContent = '🌙 Тёмная';
+            }
+        }
+
+        function toggleTheme() {
+            if (document.body.classList.contains('dark-theme')) {
+                document.body.classList.remove('dark-theme');
+                localStorage.setItem(THEME_KEY, 'light');
+                themeToggle.textContent = '🌙 Тёмная';
+            } else {
+                document.body.classList.add('dark-theme');
+                localStorage.setItem(THEME_KEY, 'dark');
+                themeToggle.textContent = '☀️ Светлая';
+            }
+        }
+
+        themeToggle.addEventListener('click', toggleTheme);
+        loadTheme();
+
+        // ==================== ВКЛАДКИ ====================
+        function switchPage(pageId) {
+            // Обновляем активный класс у кнопок
+            tabBtns.forEach(btn => {
+                const btnPage = btn.dataset.page;
+                if (btnPage === pageId) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Показываем нужную страницу
+            if (pageId === 'add') {
+                pageAdd.classList.add('active');
+                pageList.classList.remove('active');
+            } else {
+                pageAdd.classList.remove('active');
+                pageList.classList.add('active');
+            }
+        }
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchPage(btn.dataset.page);
+            });
+        });
+
+        // ==================== ОТОБРАЖЕНИЕ СОБЫТИЙ (МИНИ-БЛОКИ) ====================
+        function renderEvents() {
+            if (schedule.length === 0) {
+                eventsContainer.innerHTML = `<div class="empty-message">✨ Пока нет событий. Добавьте что‑нибудь красивое ✨</div>`;
+                return;
+            }
+
+            // Группировка по дням
+            const daysOfWeek = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+            const grouped = {};
+            for (let i = 0; i < 7; i++) grouped[i] = [];
+
+            schedule.forEach(ev => {
+                grouped[ev.day].push(ev);
+            });
+
+            // Сортировка событий внутри дня по времени
+            for (let day in grouped) {
+                grouped[day].sort((a, b) => a.start.localeCompare(b.start));
+            }
+
+            let html = '';
+            for (let day = 0; day < 7; day++) {
+                const events = grouped[day];
+                if (events.length === 0) continue;
+
+                html += `<div class="day-group"><div class="day-title">${daysOfWeek[day]}</div><div class="mini-grid">`;
+
+                events.forEach(ev => {
+                    const timeRange = ev.end ? `${ev.start} — ${ev.end}` : ev.start;
+                    html += `
+                        <div class="event-mini-card" data-id="${ev.id}">
+                            <div class="event-mini-title">${escapeHtml(ev.title)}</div>
+                            <div class="event-mini-time">🕒 ${escapeHtml(timeRange)}</div>
+                            <div class="event-mini-actions">
+                                <button class="edit-event" data-id="${ev.id}" title="Редактировать">✏️</button>
+                                <button class="delete-event" data-id="${ev.id}" title="Удалить">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `</div></div>`;
+            }
+
+            eventsContainer.innerHTML = html;
+
+            // Обработчики на кнопки редактирования и удаления
+            document.querySelectorAll('.edit-event').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = btn.dataset.id;
+                    startEditing(id);
+                    switchPage('add'); // переключаем на вкладку добавления
+                });
+            });
+
+            document.querySelectorAll('.delete-event').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = btn.dataset.id;
+                    if (confirm('Удалить событие?')) {
+                        deleteEvent(id);
+                    }
+                });
+            });
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe.replace(/[&<>"]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                if (m === '"') return '&quot;';
+                return m;
+            });
+        }
+
+        // ==================== ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ / УДАЛЕНИЕ ====================
+        function addEvent() {
+            const title = titleInput.value.trim();
+            if (!title) {
+                alert('Введите название события');
+                return;
+            }
+            const day = parseInt(daySelect.value, 10);
+            const start = startInput.value;
+            if (!start) {
+                alert('Укажите время начала');
+                return;
+            }
+            const end = endInput.value || '';
+
+            const newEvent = {
+                id: Date.now() + '-' + Math.random().toString(36).substr(2, 8),
+                title,
+                day,
+                start,
+                end,
+            };
+            schedule.push(newEvent);
+            saveSchedule();
+            renderEvents();
+            clearForm();
+            // Переключимся на вкладку расписания, чтобы пользователь сразу увидел новое событие
+            switchPage('list');
+        }
+
+        function deleteEvent(id) {
+            schedule = schedule.filter(ev => ev.id !== id);
+            notifiedToday.delete(id);
+            if (editingId === id) cancelEditing();
+            saveSchedule();
+            renderEvents();
+        }
+
+        function startEditing(id) {
+            const event = schedule.find(ev => ev.id === id);
+            if (!event) return;
+
+            editingId = id;
+            titleInput.value = event.title;
+            daySelect.value = event.day;
+            startInput.value = event.start;
+            endInput.value = event.end || '';
+
+            addBtn.style.display = 'none';
+            updateBtn.style.display = 'inline-block';
+            cancelBtn.style.display = 'inline-block';
+        }
+
+        function updateEvent() {
+            if (!editingId) return;
+
+            const title = titleInput.value.trim();
+            if (!title) {
+                alert('Введите название');
+                return;
+            }
+            const day = parseInt(daySelect.value, 10);
+            const start = startInput.value;
+            if (!start) {
+                alert('Укажите время начала');
+                return;
+            }
+            const end = endInput.value || '';
+
+            const index = schedule.findIndex(ev => ev.id === editingId);
+            if (index === -1) return;
+
+            // Сбросим уведомление для этого события при изменении времени
+            notifiedToday.delete(editingId);
+
+            schedule[index] = {
+                ...schedule[index],
+                title,
+                day,
+                start,
+                end,
+            };
+
+            saveSchedule();
+            renderEvents();
+            cancelEditing();
+            switchPage('list');
+        }
+
+        function cancelEditing() {
+            editingId = null;
+            clearForm();
+            addBtn.style.display = 'inline-block';
+            updateBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+        }
+
+        function clearForm() {
+            titleInput.value = '';
+            daySelect.value = '1';
+            startInput.value = '09:00';
+            endInput.value = '';
+        }
+
+        function clearAll() {
+            if (schedule.length === 0) return;
+            if (confirm('Точно удалить все события?')) {
+                schedule = [];
+                notifiedToday.clear();
+                saveSchedule();
+                renderEvents();
+                cancelEditing();
+                // Если мы на вкладке расписания, она обновится
+            }
+        }
+
+        // ==================== УВЕДОМЛЕНИЯ ЗА 10 МИНУТ ====================
+        function checkNotifications() {
+            if (Notification.permission !== 'granted') return;
+
+            const now = new Date();
+            const currentDay = now.getDay();
+            const currentHours = now.getHours();
+            const currentMins = now.getMinutes();
+            const currentTotalMins = currentHours * 60 + currentMins;
+            const todayStr = now.toISOString().slice(0, 10);
+
+            schedule.forEach(event => {
+                if (event.day !== currentDay) return;
+
+                const startParts = event.start.split(':').map(Number);
+                if (startParts.length !== 2) return;
+                const startTotalMins = startParts[0] * 60 + startParts[1];
+
+                if (currentTotalMins >= startTotalMins) return;
+
+                const diff = startTotalMins - currentTotalMins;
+                if (diff <= 10 && diff > 0) {
+                    if (notifiedToday.get(event.id) === todayStr) return;
+
+                    new Notification('🔔 Kira-txt · напоминание', {
+                        body: `«${event.title}» начнётся через ${diff} мин. (в ${event.start})`,
+                        silent: false,
+                    });
+
+                    notifiedToday.set(event.id, todayStr);
+                }
+            });
+        }
+
+        // Запрос разрешения на уведомления при старте
+        if (Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+        setInterval(checkNotifications, 60000);
+        setTimeout(checkNotifications, 2000);
+
+        // ==================== ПОДПИСКА НА СОБЫТИЯ КНОПОК ====================
+        addBtn.addEventListener('click', addEvent);
+        updateBtn.addEventListener('click', updateEvent);
+        cancelBtn.addEventListener('click', cancelEditing);
+        clearAllBtn.addEventListener('click', clearAll);
+
+        // Инициализация
+        loadSchedule();
+        cancelEditing(); // синхронизация режима редактирования
+
+        // Если пользователь кликнул редактировать, но потом переключил вкладку, режим редактирования не сбрасывался.
+        // Добавим сброс при переключении на вкладку list
+        document.querySelector('[data-page="list"]').addEventListener('click', function() {
+            if (editingId) {
+                // Можно спросить, хочет ли пользователь отменить редактирование
+                if (confirm('Отменить редактирование?')) {
+                    cancelEditing();
+                } else {
+                    // Если не хочет отменять, вернём на вкладку add
+                    switchPage('add');
+                }
+            }
+        });
+
+        // Аналогично, при переключении на add, если есть редактирование, оставляем как есть.
+    })();
+</script>
+</body>
+</html>
