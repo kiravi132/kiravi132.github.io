@@ -1,1 +1,671 @@
-дарова
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Kira]</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #0b1a2a;
+            color: #eef4fc;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Анимированный фон */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(45, 120, 200, 0.15) 0%, transparent 30%),
+                        radial-gradient(circle at 80% 70%, rgba(180, 80, 200, 0.1) 0%, transparent 35%),
+                        repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 8px);
+            pointer-events: none;
+            z-index: -2;
+            animation: bgParticles 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes bgParticles {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 0.9; transform: scale(1.2); }
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .animated-bg span {
+            position: absolute;
+            display: block;
+            width: 20px;
+            height: 20px;
+            background: rgba(100, 180, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+            filter: blur(8px);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(-10vw) scale(1); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(-20vh) translateX(20vw) scale(1.5); opacity: 0; }
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px 30px;
+            position: relative;
+            z-index: 5;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            margin: 80px 0;
+            scroll-margin-top: 30px;
+            animation: slideUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section:nth-of-type(1) { animation-delay: 0.2s; }
+        .section:nth-of-type(2) { animation-delay: 0.4s; }
+
+        /* Верхняя панель */
+        .top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10, 25, 40, 0.6);
+            backdrop-filter: blur(16px) saturate(180%);
+            border-radius: 90px;
+            padding: 8px 25px 8px 35px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(80, 160, 255, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(0, 150, 255, 0.4);
+            transition: box-shadow 0.3s, border-color 0.3s;
+        }
+
+        .top-bar:hover {
+            border-color: #3fa2ff;
+            box-shadow: 0 10px 35px -5px #2f8eff;
+        }
+
+        .brand {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #c0e0ff, #a0d0ff, #80c0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+            animation: glowPulse 3s infinite;
+        }
+
+        @keyframes glowPulse {
+            0% { filter: drop-shadow(0 0 2px #7abfff); }
+            50% { filter: drop-shadow(0 0 12px #3f9eff); }
+            100% { filter: drop-shadow(0 0 2px #7abfff); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 60px;
+            background: rgba(20, 40, 60, 0.7);
+            backdrop-filter: blur(8px);
+            color: #e0f0ff;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(120, 180, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(100, 180, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+            z-index: -1;
+        }
+
+        .nav-link:hover::before {
+            width: 200%;
+            height: 300%;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-4px) scale(1.05);
+            border-color: #7abfff;
+            box-shadow: 0 16px 25px -10px #2f8eff;
+            color: white;
+        }
+
+        .nav-link i {
+            color: #8fcbff;
+            transition: transform 0.3s;
+        }
+
+        .nav-link:hover i {
+            transform: rotate(10deg) scale(1.2);
+        }
+
+        /* Инфо-бар (дата/время/погода) */
+        .info-bar {
+            background: rgba(15, 30, 45, 0.6);
+            backdrop-filter: blur(16px);
+            border-radius: 80px;
+            padding: 14px 28px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(80, 160, 255, 0.4);
+            transition: all 0.4s;
+            animation: slideDown 0.8s 0.1s both;
+        }
+
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .info-bar:hover {
+            border-color: #6ab0ff;
+            box-shadow: 0 0 30px rgba(70, 150, 255, 0.5);
+        }
+
+        .datetime {
+            display: flex;
+            gap: 24px;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+
+        .date {
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(4px);
+            padding: 6px 18px;
+            border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .time {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(145deg, #102c44, #0a1e30);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 60px;
+            box-shadow: 0 4px 15px #0077ff66;
+            text-shadow: 0 0 8px #7fc4ff;
+            transition: 0.2s;
+        }
+
+        .weather-block {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(4px);
+            padding: 6px 20px 6px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(120,180,255,0.2);
+            transition: 0.3s;
+        }
+
+        .weather-block:hover {
+            background: rgba(30, 60, 90, 0.4);
+            border-color: #6aaaff;
+        }
+
+        .weather-icon {
+            font-size: 2rem;
+            animation: weatherIconFloat 3s infinite alternate;
+        }
+
+        @keyframes weatherIconFloat {
+            from { transform: translateY(0); }
+            to { transform: translateY(-5px); }
+        }
+
+        /* Соцсети — крупные плитки сверху (теперь с Twitch) */
+        .social-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0 40px 0;
+            scroll-margin-top: 30px; /* для плавного якоря */
+        }
+
+        .social-pill {
+            background: rgba(15, 35, 55, 0.8);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 18px 35px;
+            text-decoration: none;
+            color: #e0f0ff;
+            font-weight: 700;
+            font-size: 1.4rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(90, 170, 255, 0.4);
+            transition: 0.3s;
+            box-shadow: 0 10px 20px -8px #1f6fbf;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .social-pill i {
+            font-size: 2.2rem;
+            filter: drop-shadow(0 0 6px currentColor);
+        }
+
+        .social-pill:hover {
+            transform: translateY(-8px) scale(1.05);
+            border-color: #7abfff;
+            background: #1e3f5f;
+            box-shadow: 0 20px 25px -8px #2f8eff;
+        }
+
+        /* Остальные стили */
+        .section-title {
+            font-size: 2.6rem;
+            font-weight: 700;
+            border-left: 12px solid #3f9eff;
+            padding-left: 25px;
+            margin-bottom: 35px;
+            color: #d6edff;
+            text-shadow: 0 0 8px #3f9eff;
+            position: relative;
+            animation: titleGlow 2s infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { text-shadow: 0 0 5px #3f9eff; }
+            to { text-shadow: 0 0 20px #6ab0ff; }
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .about-text, .interests {
+            background: rgba(15, 30, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            padding: 30px 35px;
+            border: 1px solid rgba(80, 160, 255, 0.3);
+            transition: 0.4s;
+            animation: cardFloat 6s infinite alternate;
+        }
+
+        .about-text:hover, .interests:hover {
+            border-color: #6fb4ff;
+            box-shadow: 0 20px 40px -10px #1f6fbf;
+            transform: translateY(-8px) scale(1.02);
+        }
+
+        @keyframes cardFloat {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-5px); }
+        }
+
+        .skill-tag {
+            background: rgba(0, 100, 200, 0.2);
+            backdrop-filter: blur(4px);
+            padding: 10px 25px;
+            border-radius: 40px;
+            border: 1px solid #3f8fdf;
+            transition: 0.2s;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .skill-tag:hover {
+            background: #2f6faf;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px #3f9eff;
+        }
+
+        .interests li i {
+            animation: iconWiggle 2s infinite;
+        }
+
+        @keyframes iconWiggle {
+            0%,100% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .game-card {
+            background: rgba(10, 25, 45, 0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 40px;
+            overflow: hidden;
+            border: 1px solid rgba(100, 180, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: cardAppear 0.8s both;
+            transform-origin: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .game-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            border-color: #7abfff;
+            box-shadow: 0 30px 40px -10px #1f7fff, 0 0 30px #3f9eff;
+        }
+
+        .game-img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            transition: transform 0.6s;
+        }
+
+        .game-card:hover .game-img {
+            transform: scale(1.05);
+        }
+
+        .game-title {
+            padding: 20px 18px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+            color: #e0f0ff;
+        }
+
+        .footer-note {
+            margin-top: 80px;
+            text-align: center;
+            color: #8fc9ff;
+            border-top: 2px dashed #3f8fdf;
+            padding-top: 30px;
+            animation: fadeIn 2s;
+        }
+
+        @media (max-width: 700px) {
+            .about-grid { grid-template-columns: 1fr; }
+            .top-bar { flex-direction: column; border-radius: 50px; }
+            .social-pill { padding: 14px 20px; font-size: 1.2rem; min-width: 160px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg">
+        <span style="left: 10%; animation-duration: 12s; animation-delay: 0s;"></span>
+        <span style="left: 30%; animation-duration: 18s; animation-delay: 2s;"></span>
+        <span style="left: 60%; animation-duration: 14s; animation-delay: 1s;"></span>
+        <span style="left: 80%; animation-duration: 22s; animation-delay: 3s;"></span>
+        <span style="left: 45%; animation-duration: 16s; animation-delay: 0.5s;"></span>
+    </div>
+
+    <div class="container">
+        <!-- Верхняя панель с именем и навигацией -->
+        <div class="top-bar">
+            <span class="brand">Kira</span>
+            <div class="nav-links">
+                <a href="#about" class="nav-link"><i class="fas fa-user"></i> О себе</a>
+                <a href="#games" class="nav-link"><i class="fas fa-gamepad"></i> Игры</a>
+                <!-- Ссылка Контакты ведёт к блоку соцсетей -->
+                <a href="#social-top" class="nav-link"><i class="fas fa-address-book"></i> Контакты</a>
+            </div>
+        </div>
+
+        <!-- Дата, время, погода -->
+        <div class="info-bar" id="infoBar">
+            <div class="datetime" id="datetimeBlock">
+                <span class="date" id="currentDate">--.--.----</span>
+                <span class="time" id="currentTime">--:--:--</span>
+            </div>
+            <div class="weather-block" id="weatherBlock">
+                <span class="weather-icon" id="weatherIcon">☀️</span>
+                <span class="weather-temp" id="weatherTemp">--°C</span>
+                <span class="weather-desc" id="weatherDesc">загрузка...</span>
+            </div>
+        </div>
+
+        <!-- СОЦСЕТИ — КРУПНО, СРАЗУ ВИДНО (с Twitch вместо YouTube) -->
+        <div class="social-strip" id="social-top">
+            <a href="https://t.me/Kira132_oficial" target="_blank" rel="noopener noreferrer" class="social-pill">
+                <i class="fab fa-telegram-plane"></i> Telegram
+            </a>
+            <a href="https://steamcommunity.com/id/Kiravi132/" target="_blank" rel="noopener noreferrer" class="social-pill">
+                <i class="fab fa-steam"></i> Steam
+            </a>
+            <a href="https://www.twitch.tv/kiravi132" target="_blank" rel="noopener noreferrer" class="social-pill">
+                <i class="fab fa-twitch"></i> Twitch
+            </a>
+        </div>
+
+        <!-- О себе -->
+        <section id="about" class="section">
+            <div class="section-title">✨ обо мне</div>
+            <div class="about-grid">
+                <div class="about-text">
+                    <p><i class="fas fa-code" style="margin-right: 10px; color: #6ab0ff;"></i>Начинающий разработчик, создаю сайты, приложения и картинки. Люблю превращать идеи в работающие продукты и экспериментировать с дизайном.</p>
+                    <p>Постоянно учусь: осваиваю современные фреймворки, пробую себя в бэкенде и не забываю про творчество. В свободное время играю в игры — это помогает находить нестандартные решения.</p>
+                    <div class="skill-list">
+                        <span class="skill-tag"><i class="fab fa-html5"></i> HTML/CSS</span>
+                        <span class="skill-tag"><i class="fab fa-js"></i> JavaScript</span>
+                        <span class="skill-tag"><i class="fab fa-python"></i> Python</span>
+                        <span class="skill-tag"><i class="fas fa-paint-brush"></i> Figma</span>
+                        <span class="skill-tag"><i class="fas fa-mobile-alt"></i> React (учу)</span>
+                    </div>
+                </div>
+                <div class="interests">
+                    <h3><i class="fas fa-heart" style="color: #ff7b7b;"></i> увлечения</h3>
+                    <ul style="list-style: none;">
+                        <li><i class="fas fa-cube"></i> 3D-моделирование (Blender)</li>
+                        <li><i class="fas fa-headphones-alt"></i> Музыка в дороге</li>
+                        <li><i class="fas fa-camera-retro"></i> Обработка фото</li>
+                        <li><i class="fas fa-robot"></i> Нейросети и автоматизация</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Игры -->
+        <section id="games" class="section">
+            <div class="section-title">🎮 мои игры</div>
+            <div class="games-grid">
+                <a href="https://steamcommunity.com/id/Kiravi132/" target="_blank" rel="noopener noreferrer" class="game-card">
+                    <img class="game-img" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/578080/header.jpg" alt="PUBG Battlegrounds" loading="lazy">
+                    <span class="game-title">PUBG Battlegrounds</span>
+                </a>
+                <a href="https://steamcommunity.com/id/Kiravi132/" target="_blank" rel="noopener noreferrer" class="game-card">
+                    <img class="game-img" src="https://upload.wikimedia.org/wikipedia/en/9/9c/Minecraft_cover.png" alt="Minecraft" loading="lazy">
+                    <span class="game-title">Minecraft</span>
+                </a>
+                <a href="https://steamcommunity.com/id/Kiravi132/" target="_blank" rel="noopener noreferrer" class="game-card">
+                    <img class="game-img" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/641990/header.jpg" alt="The Escapists 2" loading="lazy">
+                    <span class="game-title">The Escapists 2</span>
+                </a>
+                <a href="https://steamcommunity.com/id/Kiravi132/" target="_blank" rel="noopener noreferrer" class="game-card">
+                    <img class="game-img" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/730/header.jpg" alt="Counter-Strike 2" loading="lazy">
+                    <span class="game-title">Counter-Strike 2</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Дублирующий раздел контактов УДАЛЁН -->
+
+        <div class="footer-note">
+            <i class="fas fa-location-arrow"></i> клик по игре — сразу в мой Steam · данные погоды кэшируются
+        </div>
+    </div>
+
+    <!-- Скрипты для даты/времени/погоды -->
+    <script>
+        (function() {
+            const dateEl = document.getElementById('currentDate');
+            const timeEl = document.getElementById('currentTime');
+
+            function updateDateTime() {
+                const now = new Date();
+                const day = String(now.getDate()).padStart(2, '0');
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const year = now.getFullYear();
+                dateEl.textContent = `${day}.${month}.${year}`;
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                timeEl.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+
+            // Погода
+            const weatherIconEl = document.getElementById('weatherIcon');
+            const weatherTempEl = document.getElementById('weatherTemp');
+            const weatherDescEl = document.getElementById('weatherDesc');
+
+            function getWeatherFromCode(code) {
+                if (code === 0) return { icon: '☀️', desc: 'ясно' };
+                if (code === 1) return { icon: '🌤️', desc: 'преимущественно ясно' };
+                if (code === 2) return { icon: '⛅', desc: 'переменная облачность' };
+                if (code === 3) return { icon: '☁️', desc: 'пасмурно' };
+                if (code >= 45 && code <= 49) return { icon: '🌫️', desc: 'туман' };
+                if (code >= 51 && code <= 55) return { icon: '🌧️', desc: 'морось' };
+                if (code >= 61 && code <= 65) return { icon: '🌧️', desc: 'дождь' };
+                if (code >= 71 && code <= 75) return { icon: '❄️', desc: 'снег' };
+                if (code >= 80 && code <= 82) return { icon: '🌦️', desc: 'ливень' };
+                if (code >= 95 && code <= 99) return { icon: '⛈️', desc: 'гроза' };
+                return { icon: '🌡️', desc: 'спец.' };
+            }
+
+            function loadCachedWeather() {
+                try {
+                    const cached = localStorage.getItem('kira_weather');
+                    if (!cached) return null;
+                    const { timestamp, data } = JSON.parse(cached);
+                    const age = (Date.now() - timestamp) / 1000 / 60;
+                    if (age > 30) return null;
+                    return data;
+                } catch { return null; }
+            }
+
+            function saveWeatherToCache(data) {
+                try { localStorage.setItem('kira_weather', JSON.stringify({ timestamp: Date.now(), data })); } catch (e) {}
+            }
+
+            function displayWeather(data) {
+                if (data && data.temperature !== undefined) {
+                    const w = getWeatherFromCode(data.weathercode);
+                    weatherIconEl.textContent = w.icon;
+                    weatherTempEl.textContent = Math.round(data.temperature) + '°C';
+                    weatherDescEl.textContent = w.desc;
+                } else {
+                    weatherIconEl.textContent = '☀️';
+                    weatherTempEl.textContent = '~20°C';
+                    weatherDescEl.textContent = 'тестовые';
+                }
+            }
+
+            function fetchWeatherByCoords(lat, lon) {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
+                fetch(url)
+                    .then(res => res.json())
+                    .then(json => {
+                        if (json?.current_weather) {
+                            const weatherData = {
+                                temperature: json.current_weather.temperature,
+                                weathercode: json.current_weather.weathercode
+                            };
+                            saveWeatherToCache(weatherData);
+                            displayWeather(weatherData);
+                        } else throw new Error();
+                    })
+                    .catch(() => {
+                        const cached = loadCachedWeather();
+                        if (cached) displayWeather(cached);
+                        else displayWeather({ temperature: 21, weathercode: 0 });
+                    });
+            }
+
+            function startWeather() {
+                const cached = loadCachedWeather();
+                if (cached) displayWeather(cached);
+                else displayWeather({ temperature: 21, weathercode: 0 });
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude),
+                        () => fetchWeatherByCoords(55.75, 37.62),
+                        { timeout: 7000 }
+                    );
+                } else {
+                    fetchWeatherByCoords(55.75, 37.62);
+                }
+            }
+            startWeather();
+        })();
+    </script>
+</body>
+</html>
