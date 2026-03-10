@@ -2,447 +2,148 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ㅤ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ЧУРКА · яро мерцание</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
         }
 
-        body {
-            min-height: 100vh;
-            background: #000000;
-            font-family: 'Segoe UI', 'Courier New', monospace;
+        html, body {
+            width: 100%;
+            height: 100%;
             overflow: hidden;
-            position: relative;
-            color: #f0f0f0;
+            background: black;
         }
 
-        #text-display {
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            font-size: clamp(2rem, 8vw, 4.5rem);
-            font-weight: 700;
-            color: #ffffff;
-            text-align: center;
-            white-space: pre-line;
-            word-break: break-word;
-            max-width: 90vw;
-            line-height: 1.3;
-            transition: opacity 1s ease, left 0.1s ease, top 0.1s ease;
-            opacity: 1;
-            z-index: 5;
-            pointer-events: none;
-            text-shadow: 0 0 8px rgba(255,255,255,0.5);
-        }
-
-        /* красный текст после перезагрузки */
-        #red-message {
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            font-size: clamp(3rem, 10vw, 6rem);
-            font-weight: 900;
-            color: #ff0000;
-            text-align: center;
-            white-space: pre-line;
-            word-break: break-word;
-            max-width: 90vw;
-            line-height: 1.3;
-            z-index: 200;
-            display: none;
-            pointer-events: none;
-            text-shadow: 0 0 20px rgba(255,0,0,0.8);
-            text-transform: uppercase;
-        }
-
-        #bsod-overlay {
+        .fullscreen-container {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Windows_9x_BSOD.png/800px-Windows_9x_BSOD.png') no-repeat center center;
-            background-size: cover;
-            background-color: #0a4b8c;
-            color: white;
-            font-family: 'Segoe UI', 'Lucida Console', monospace;
-            display: none;
-            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 100;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.7);
+            background: transparent;
         }
 
-        .bsod-content {
-            background: rgba(0,0,0,0.6);
-            padding: 2rem 3rem;
-            border-radius: 20px;
-            backdrop-filter: blur(2px);
-            border: 2px solid #ffffff55;
+        .strobe {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: rgb-strobe 0.08s infinite alternate;
         }
 
-        .bsod-title {
-            font-size: 5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            letter-spacing: 4px;
-            text-shadow: 2px 2px 0 #000000;
+        @keyframes rgb-strobe {
+            0%   { background-color: #ff0000; }
+            15%  { background-color: #ff2200; }
+            30%  { background-color: #00ff22; }
+            45%  { background-color: #0022ff; }
+            60%  { background-color: #ff00cc; }
+            75%  { background-color: #ffff00; }
+            90%  { background-color: #ff8800; }
+            100% { background-color: #ff0044; }
         }
 
-        .bsod-message {
-            font-size: 1.8rem;
-            margin-bottom: 3rem;
-            font-family: 'Courier New', monospace;
-            background: #00000033;
-            padding: 1rem 2rem;
-            border-left: 4px solid white;
+        .churka-text {
+            font-family: 'Arial Black', 'Impact', 'Helvetica Bold', sans-serif;
+            font-size: min(25vw, 35vh, 300px);
+            font-weight: 900;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-shadow: 
+                0 0 20px currentColor,
+                0 0 40px rgba(255,255,255,0.8),
+                4px 4px 0 rgba(0,0,0,0.5);
+            user-select: none;
+            pointer-events: none;
+            z-index: 10;
+            animation: text-pulse 0.16s infinite alternate;
         }
 
-        #restart-btn {
-            background: white;
-            color: #0a4b8c;
-            border: none;
-            font-size: 2.2rem;
-            font-weight: bold;
-            padding: 1rem 3rem;
-            border-radius: 60px;
-            cursor: pointer;
-            box-shadow: 0 8px 0 #04243e, 0 10px 20px rgba(0,0,0,0.5);
-            transition: 0.07s linear;
-            font-family: inherit;
-            letter-spacing: 2px;
+        @keyframes text-pulse {
+            0%   { transform: scale(1); opacity: 1; text-shadow: 0 0 10px magenta, 0 0 30px cyan; }
+            50%  { transform: scale(1.05); opacity: 0.95; text-shadow: 0 0 25px yellow, 0 0 60px red; }
+            100% { transform: scale(0.98); opacity: 1; text-shadow: 0 0 15px lime, 0 0 45px blue; }
         }
 
-        #restart-btn:hover {
-            transform: translateY(4px);
-            box-shadow: 0 4px 0 #04243e, 0 10px 20px rgba(0,0,0,0.5);
-        }
-
-        #restart-btn:active {
-            transform: translateY(8px);
-            box-shadow: 0 0 0 #04243e, 0 10px 20px rgba(0,0,0,0.5);
+        .strobe {
+            opacity: 1;
+            transition: opacity 0.01s;
         }
 
         .hint {
             position: fixed;
-            bottom: 12px;
-            right: 16px;
-            color: #555;
-            font-size: 0.8rem;
-            z-index: 1;
+            bottom: 8px;
+            right: 12px;
+            color: rgba(255,255,255,0.25);
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 999;
+            pointer-events: none;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 20px;
+            backdrop-filter: blur(2px);
         }
-
-        /* полноэкранный режим — для body не нужны особые стили */
     </style>
 </head>
 <body>
 
-    <div id="text-display">You know who you are...</div>
-    <div id="red-message">You don't have a family.</div>
-
-    <div id="bsod-overlay">
-        <div class="bsod-content">
-            <div class="bsod-title">:(</div>
-            <div class="bsod-message">SYSTEM_SERVICE_EXCEPTION</div>
-            <button id="restart-btn">⟲ ПЕРЕЗАПУСТИТЬ</button>
+    <div class="fullscreen-container" id="fullscreenEl">
+        <div class="strobe">
+            <div class="churka-text">ЧУРКА</div>
         </div>
     </div>
 
-    <div class="hint">SOS</div>
+    <div class="hint">fullscreen · rgb strobe</div>
 
     <script>
         (function() {
-            // ========== НАСТРОЙКИ ==========
-            const DISPLAY_DURATION = 3000;       // сколько висит каждый текст (мс)
-            const FADE_DURATION = 1000;           // длительность fade
-            const FLYING_DURATION = 4000;          // сколько текст летает перед BSOD (мс)
-            const FLYING_INTERVAL = 60;            // очень быстрый интервал (60 мс)
-            const RED_MESSAGE_DURATION = 2000;      // сколько показывать красный текст после перезапуска (мс)
-
-            // ========== ЭЛЕМЕНТЫ ==========
-            const textEl = document.getElementById('text-display');
-            const redMessageEl = document.getElementById('red-message');
-            const bsodEl = document.getElementById('bsod-overlay');
-            const restartBtn = document.getElementById('restart-btn');
-
-            // ========== ТОЛЬКО ОДИН НАБОР ТЕКСТА ==========
-            const textSet = [
-                "You know who you are...",
-                "Where is your family.....",
-                "You son of a bitch, you knew everything, right"
-            ];
-
-            // ========== СОСТОЯНИЕ ==========
-            let currentTextIndex = 0;
-            let timeouts = [];
-            let flyingInterval = null;
-            let flyingEndTimeout = null;
-            let isFlying = false;
-            let bsodShown = false;            // флаг, показывался ли синий экран (для блокировки выхода из полноэкранного режима)
-            let fullscreenForced = false;      // был ли активирован полноэкранный режим
-
-            // ========== ПОЛНОЭКРАННЫЙ РЕЖИМ ==========
+            const element = document.documentElement;
+            
             function enterFullscreen() {
-                const elem = document.documentElement;
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen().catch(err => {
-                        console.warn("Не удалось войти в полноэкранный режим:", err);
+                if (document.fullscreenElement) return;
+                
+                const requestFullscreen = element.requestFullscreen || 
+                                         element.webkitRequestFullscreen || 
+                                         element.mozRequestFullScreen || 
+                                         element.msRequestFullscreen;
+                
+                if (requestFullscreen) {
+                    requestFullscreen.call(element).catch(err => {
+                        console.warn('Fullscreen не сработал автоматически:', err);
                     });
-                } else if (elem.webkitRequestFullscreen) {
-                    elem.webkitRequestFullscreen();
-                } else if (elem.msRequestFullscreen) {
-                    elem.msRequestFullscreen();
                 }
             }
 
-            function exitFullscreen() {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-            }
+            enterFullscreen();
 
-            // следим за изменением полноэкранного режима
-            function handleFullscreenChange() {
-                // если BSOD ещё не показан, и мы не в полноэкранном режиме — принудительно возвращаем
-                if (!bsodShown && !document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-                    // но не вызываем сразу, чтобы не зациклиться; можно с небольшой задержкой
-                    setTimeout(() => {
-                        if (!bsodShown && !document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-                            enterFullscreen();
-                        }
-                    }, 100);
-                }
-            }
-
-            document.addEventListener('fullscreenchange', handleFullscreenChange);
-            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-            document.addEventListener('msfullscreenchange', handleFullscreenChange);
-
-            // блокируем клавиши, которые могут выйти из полноэкранного режима (Esc, F11)
-            function blockExitKeys(e) {
-                if (bsodShown) return; // после ошибки не блокируем
-                const key = e.key;
-                // Esc (27) или F11 (F11)
-                if (key === 'Escape' || key === 'F11' || key === 'Esc') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    // дополнительно снова форсируем полноэкранный режим
-                    if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-                        enterFullscreen();
-                    }
-                }
-            }
-
-            document.addEventListener('keydown', blockExitKeys, true); // используем capturing, чтобы перехватить раньше
-
-            // активируем полноэкранный режим при первом клике (автоматически при загрузке нельзя)
-            document.addEventListener('click', function firstClick() {
-                if (!fullscreenForced) {
+            const triggerFs = function(e) {
+                if (!document.fullscreenElement) {
                     enterFullscreen();
-                    fullscreenForced = true;
                 }
-                document.removeEventListener('click', firstClick);
+                document.removeEventListener('click', triggerFs);
+                document.removeEventListener('touchstart', triggerFs);
+                document.removeEventListener('keydown', triggerFs);
+            };
+
+            document.addEventListener('click', triggerFs, { once: true });
+            document.addEventListener('touchstart', triggerFs, { once: true, passive: true });
+            document.addEventListener('keydown', triggerFs, { once: true });
+
+            window.addEventListener('load', function() {
+                setTimeout(enterFullscreen, 200);
             });
 
-            // также пробуем при касании для мобильных
-            document.addEventListener('touchstart', function firstTouch() {
-                if (!fullscreenForced) {
-                    enterFullscreen();
-                    fullscreenForced = true;
-                }
-                document.removeEventListener('touchstart', firstTouch);
-            });
-
-            // ========== ВСПОМОГАТЕЛЬНЫЕ ==========
-            function clearAllTimeouts() {
-                timeouts.forEach(id => clearTimeout(id));
-                timeouts = [];
-            }
-
-            function stopFlying() {
-                if (flyingInterval) {
-                    clearInterval(flyingInterval);
-                    flyingInterval = null;
-                }
-                if (flyingEndTimeout) {
-                    clearTimeout(flyingEndTimeout);
-                    flyingEndTimeout = null;
-                }
-                isFlying = false;
-            }
-
-            function resetTextPosition() {
-                textEl.style.left = '50%';
-                textEl.style.top = '50%';
-                textEl.style.transform = 'translate(-50%, -50%)';
-                textEl.style.removeProperty('left');
-                textEl.style.removeProperty('top');
-                textEl.style.left = '50%';
-                textEl.style.top = '50%';
-                textEl.style.transform = 'translate(-50%, -50%)';
-            }
-
-            function fadeToText(newText, callback) {
-                textEl.style.opacity = '0';
-
-                const fadeOutTimeout = setTimeout(() => {
-                    textEl.textContent = newText;
-                    textEl.style.opacity = '1';
-
-                    const fadeInTimeout = setTimeout(() => {
-                        if (callback) callback();
-                    }, FADE_DURATION);
-
-                    timeouts.push(fadeInTimeout);
-                }, FADE_DURATION);
-
-                timeouts.push(fadeOutTimeout);
-            }
-
-            // ========== ЦИКЛ ПОКАЗА ТЕКСТА ==========
-            function showCurrentTextAndSchedule() {
-                const text = textSet[currentTextIndex];
-
-                fadeToText(text, () => {
-                    const nextTimeout = setTimeout(() => {
-                        if (currentTextIndex === textSet.length - 1) {
-                            startFlying();
-                        } else {
-                            currentTextIndex++;
-                            showCurrentTextAndSchedule();
-                        }
-                    }, DISPLAY_DURATION);
-
-                    timeouts.push(nextTimeout);
-                });
-            }
-
-            // ========== СТАРТ ПОСЛЕДОВАТЕЛЬНОСТИ ==========
-            function startSequence() {
-                stopFlying();
-                clearAllTimeouts();
-
-                resetTextPosition();
-                textEl.style.opacity = '1';
-                currentTextIndex = 0;
-                showCurrentTextAndSchedule();
-            }
-
-            // ========== ПОЛЁТ ТЕКСТА ==========
-            function startFlying() {
-                clearAllTimeouts();
-                if (isFlying) return;
-                isFlying = true;
-
-                textEl.style.opacity = '1';
-                textEl.style.transform = 'none';
-
-                const centerX = window.innerWidth / 2 - textEl.offsetWidth / 2;
-                const centerY = window.innerHeight / 2 - textEl.offsetHeight / 2;
-                textEl.style.left = Math.max(0, centerX) + 'px';
-                textEl.style.top = Math.max(0, centerY) + 'px';
-
-                function moveRandomly() {
-                    if (!textEl) return;
-                    const rect = textEl.getBoundingClientRect();
-                    const maxX = window.innerWidth - rect.width;
-                    const maxY = window.innerHeight - rect.height;
-                    if (maxX <= 0 || maxY <= 0) return;
-                    const newLeft = Math.random() * maxX;
-                    const newTop = Math.random() * maxY;
-                    textEl.style.left = newLeft + 'px';
-                    textEl.style.top = newTop + 'px';
-                }
-
-                flyingInterval = setInterval(moveRandomly, FLYING_INTERVAL);
-
-                flyingEndTimeout = setTimeout(() => {
-                    showBSOD();
-                }, FLYING_DURATION);
-            }
-
-            // ========== СИНИЙ ЭКРАН ==========
-            function showBSOD() {
-                stopFlying();
-                bsodEl.style.display = 'flex';
-                bsodShown = true;  // с этого момента можно выйти из полноэкранного режима (не блокируем)
-            }
-
-            // ========== ПЕРЕЗАПУСК С КРАСНЫМ ТЕКСТОМ ==========
-            function restartWithRedMessage() {
-                // скрываем BSOD
-                bsodEl.style.display = 'none';
-                // останавливаем всё
-                stopFlying();
-                clearAllTimeouts();
-
-                // сбрасываем флаг bsodShown, чтобы снова активировать блокировку полноэкранного режима
-                bsodShown = false;
-
-                // скрываем основной текст (чтобы не мешал)
-                textEl.style.opacity = '0';
-
-                // показываем красное сообщение
-                redMessageEl.style.display = 'block';
-
-                // через RED_MESSAGE_DURATION скрываем красное сообщение и запускаем последовательность
-                const redTimeout = setTimeout(() => {
-                    redMessageEl.style.display = 'none';
-                    // возвращаем основной текст (он появится в startSequence)
-                    textEl.style.opacity = '1';
-                    resetTextPosition();
-                    startSequence();
-
-                    // также убеждаемся, что полноэкранный режим активен (если вдруг вышел)
-                    if (!bsodShown && !document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-                        enterFullscreen();
-                    }
-                }, RED_MESSAGE_DURATION);
-
-                timeouts.push(redTimeout);
-            }
-
-            // ========== ИНИЦИАЛИЗАЦИЯ ==========
-            window.addEventListener('load', () => {
-                resetTextPosition();
-                startSequence();
-
-                restartBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    restartWithRedMessage();
-                });
-
-                window.addEventListener('resize', () => {
-                    if (isFlying) {
-                        const rect = textEl.getBoundingClientRect();
-                        const maxX = window.innerWidth - rect.width;
-                        const maxY = window.innerHeight - rect.height;
-                        let left = parseFloat(textEl.style.left) || 0;
-                        let top = parseFloat(textEl.style.top) || 0;
-                        left = Math.min(maxX, Math.max(0, left));
-                        top = Math.min(maxY, Math.max(0, top));
-                        textEl.style.left = left + 'px';
-                        textEl.style.top = top + 'px';
-                    }
-                });
-            });
-
-            // дополнительно: при попытке выйти через контекстное меню или другие клавиши — оставляем как есть
         })();
     </script>
+
 </body>
 </html>
