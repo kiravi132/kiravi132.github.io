@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Kira | Поддержка</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f5fa 0%, #dde9f5 100%);
+            font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 48px 24px 48px 24px;
+            box-shadow: 0 30px 50px rgba(70, 120, 180, 0.25),
+                        0 10px 25px rgba(0, 0, 0, 0.1),
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            max-width: 480px;
+            width: 100%;
+            padding: 32px 24px 36px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #1e3c5c, #2b5876);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+            text-shadow: 2px 2px 0 rgba(200, 220, 240, 0.5);
+        }
+
+        .full-name {
+            font-size: 1.2rem;
+            background: #e3eef9;
+            border-radius: 30px;
+            padding: 8px 22px;
+            margin: 10px 0 15px;
+            display: inline-block;
+            border: 1px solid #aaccff;
+            color: #1e3c5c;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .contract-block {
+            background: #d4e3f0;
+            padding: 14px 18px;
+            border-radius: 60px;
+            margin: 10px 0 20px;
+            border: 2px dashed #2b5876;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .contract-number {
+            font-family: 'Courier New', monospace;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0a1f2f;
+            letter-spacing: 2px;
+            background: white;
+            padding: 5px 15px;
+            border-radius: 40px;
+            border: 1px solid #2b5876;
+        }
+
+        .cyber-tag {
+            background: #0a1f2f;
+            color: #7df9ff;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border: 1px solid #4df0ff;
+            box-shadow: 0 0 8px #4df0ff;
+        }
+
+        .qr-wrapper {
+            background: white;
+            border-radius: 36px;
+            padding: 20px;
+            box-shadow: 0 20px 30px rgba(40, 80, 130, 0.3);
+            display: inline-block;
+            margin: 20px 0 22px;
+            border: 3px solid white;
+            transition: transform 0.2s ease;
+        }
+
+        .qr-wrapper:hover {
+            transform: scale(1.02);
+        }
+
+        img.qr-code {
+            display: block;
+            width: 250px;
+            height: 250px;
+            max-width: 100%;
+            border-radius: 24px;
+            background: #ffffff;
+        }
+
+        .tinkoff-badge {
+            background: #ffefd2;
+            color: #3d2b1f;
+            font-weight: 600;
+            font-size: 1.3rem;
+            padding: 12px 24px;
+            border-radius: 60px;
+            margin: 5px auto 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid #fdd0b5;
+            box-shadow: 0 4px 0 #cf9f8b;
+        }
+
+        .link-container {
+            margin: 18px 0 14px;
+            word-break: break-all;
+        }
+
+        .main-link {
+            display: inline-block;
+            background: #1e3c5c;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            border: 2px solid #8fcbff;
+            box-shadow: 0 5px 0 #0f2638;
+            transition: 0.15s;
+            margin-top: 8px;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .main-link:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #0f2638;
+        }
+
+        .main-link:hover {
+            background: #2b4b6e;
+        }
+
+        .small-note {
+            font-size: 0.95rem;
+            color: #2b4b6e;
+            background: rgba(200, 225, 250, 0.8);
+            padding: 10px 20px;
+            border-radius: 40px;
+            display: inline-block;
+            margin-top: 20px;
+            border: 1px solid #8fcbff;
+        }
+
+        footer {
+            margin-top: 28px;
+            color: #5a6f82;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <!-- имя Kira крупно -->
+        <h1>Kira</h1>
+        
+        <!-- полное имя и фамилия (как в файле) -->
+        <div class="full-name">
+            Маккаревич Кирилл Витальевич
+        </div>
+
+        <!-- кибер-номер договора (стилизован) -->
+        <div class="contract-block">
+            <span class="cyber-tag">⚡ КИБЕР ⚡</span>
+            <span class="contract-number">5333702123</span>
+        </div>
+
+        <!-- НОВЫЙ QR-код (другой стиль, но ведёт на ту же ссылку) 
+             Используем тот же API, но с другим дизайном: добавляем цвет и точку -->
+        <div class="qr-wrapper">
+            <img class="qr-code" 
+                 src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&color=1e3c5c&bgcolor=f0f5fa&qzone=2&data=https://www.tinkoff.ru/rm/r_zgTKnjqpFj.VIWBUmkZjG/KKxG28190" 
+                 alt="QR-код Tinkoff Kira">
+        </div>
+
+        <!-- подпись к QR -->
+        <div class="tinkoff-badge">
+            <span>💳</span> TINKOFF <span>✨</span>
+        </div>
+
+        <!-- ссылка на основной сайт -->
+        <div class="link-container">
+            <a class="main-link" href="https://kiravi132.github.io" target="_blank" rel="noopener noreferrer">
+                🔗 ОСНОВНОЙ САЙТ 🔗
+            </a>
+        </div>
+
+        <!-- подсказка -->
+        <div class="small-note">
+            отсканируй QR или нажми для перевода
+        </div>
+
+        <!-- повтор имени и номера договора для гарантии -->
+        <footer>
+            <div>Маккаревич Кирилл Витальевич</div>
+            <div style="font-size:0.8rem; opacity:0.7;">договор 5333702123</div>
+        </footer>
+    </div>
+
+    <!-- скрытая ссылка -->
+    <div style="display: none;">https://www.tinkoff.ru/rm/r_zgTKnjqpFj.VIWBUmkZjG/KKxG28190</div>
+</body>
+</html>
