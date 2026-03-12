@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KIRA · тёмный режим</title>
+    <style>
+        /* Стили скопируйте из предыдущего сообщения (тёмная тема) */
+        /* Для краткости они здесь не дублируются, но вы можете взять их из предыдущего ответа */
+        /* Убедитесь, что стили полностью соответствуют вашему дизайну */
+        /* ... (полные стили из предыдущего варианта) ... */
+    </style>
+</head>
+<body>
+<div class="chat-container">
+    <div class="header">
+        ⚡ KIRA
+        <span>локальный чат</span>
+    </div>
+
+    <div class="api-section">
+        <label for="apiKey">🔑 API ключ OpenAI</label>
+        <input type="password" id="apiKey" placeholder="sk-..." value="">
+        <select id="modelSelect">
+            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+            <option value="gpt-4">GPT-4 (если доступ)</option>
+            <option value="gpt-4-turbo">GPT-4 Turbo</option>
+        </select>
+        <button id="saveKeyBtn">💾 сохранить</button>
+        <span class="warning-badge">ключ в localStorage</span>
+    </div>
+
+    <div id="chatBox" class="chat-box">
+        <div class="message assistant-message">
+            Привет, я KIRA. Введи ключ OpenAI и выбери модель.
+        </div>
+    </div>
+
+    <div class="input-panel">
+        <input type="text" id="userInput" placeholder="Напиши сообщение..." disabled>
+        <button id="sendBtn" disabled>➤ отправить</button>
+        <button id="newChatBtn" class="secondary-btn">🔄 новый диалог</button>
+    </div>
+
+    <div class="footer-note">
+        ⚠️ <strong>Ключ сохраняется в браузере (localStorage)</strong> — не используйте на публичных компьютерах.<br>
+        🚀 Запросы идут через собственный прокси-сервер, CORS не блокирует.
+    </div>
+</div>
+
+<script>
+    (function() {
+        const apiKeyInput = document.getElementById('apiKey');
+        const modelSelect = document.getElementById('modelSelect');
+        const saveKeyBtn = document.getElementById('saveKeyBtn');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const newChatBtn = document.getElementById('newChatBtn');
+        const chatBox = document.getElementById('chatBox');
+
+        let apiKey = '';
+        let messagesHistory = [
+            { role: 'system', content: 'Ты — KIRA, полезный, лаконичный и немного саркастичный ассистент. Отвечай на том же языке, что и пользователь.' }
+        ];
+
+        function loadStoredSettings() {
+            const storedKey = localStorage.getItem('kira_api_key');
+            if (storedKey && storedKey.startsWith('sk-')) {
+                apiKey = storedKey;
+                apiKeyInput.value = storedKey;
+                enableChat();
+            }
+            const storedModel = localStorage.getItem('kira_model');
+            if (storedModel) modelSelect.value = storedModel;
+        }
+
+        function saveKeyToStorage(key) {
+            localStorage.setItem('kira_api_key', key);
+        }
+
+        function saveModelToStorage(model) {
+            localStorage.setItem('kira_model', model);
+        }
+
+        function enableChat() {
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            userInput.focus();
+        }
+
+        function addMessageToChat(role, text, isTyping = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', role === 'user' ? 'user-message' : 'assistant-message');
+            if (isTyping) {
+                messageDiv.classList.add('typing-indicator');
+                messageDiv.textContent = 'KIRA печатает';
+            } else {
+                messageDiv.textContent = text;
+            }
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return messageDiv;
+        }
+
+        function removeTypingIndicator() {
+            const lastChild = chatBox.lastChild;
+            if (lastChild && lastChild.classList.contains('typing-indicator')) {
+                lastChild.remove();
+            }
+        }
+
+        function resetChat() {
+            chatBox.innerHTML = '';
+            addMessageToChat('assistant', 'Привет, я KIRA. Введи ключ OpenAI и выбери модель.');
+            messagesHistory = [
+                { role: 'system', content: 'Ты — KIRA, полезный, лаконичный и немного саркастичный ассистент. Отвечай на том же языке, что и пользователь.' }
+            ];
+        }
+
+        saveKeyBtn.addEventListener('click', () => {
+            const key = apiKeyInput.value.trim();
+            if (key && key.startsWith('sk-')) {
+                apiKey = key;
+                saveKeyToStorage(key);
+                saveModelToStorage(modelSelect.value);
+                enableChat();
+                addMessageToChat('assistant', '✅ Ключ сохранён в localStorage. Модель: ' + modelSelect.value);
+            } else {
+                alert('Введите корректный ключ OpenAI (начинается с sk-).');
+            }
+        });
+
+        modelSelect.addEventListener('change', () => {
+            if (apiKey) {
+                saveModelToStorage(modelSelect.value);
+                addMessageToChat('assistant', '⚙️ Модель изменена на ' + modelSelect.value);
+            }
+        });
+
+        newChatBtn.addEventListener('click', resetChat);
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text || !apiKey) return;
+
+            addMessageToChat('user', text);
+            messagesHistory.push({ role: 'user', content: text });
+
+            userInput.value = '';
+            userInput.disabled = true;
+            sendBtn.disabled = true;
+
+            addMessageToChat('assistant', 'KIRA печатает', true);
+
+            try {
+                const model = modelSelect.value;
+                // Отправляем запрос на наш прокси (относительный путь)
+                const response = await fetch('/api/proxy', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                        // Authorization не нужен — ключ на сервере!
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: messagesHistory,
+                        temperature: 0.8,
+                        max_tokens: 800
+                    })
+                });
+
+                removeTypingIndicator();
+
+                if (!response.ok) {
+                    let errorMsg = `Ошибка HTTP ${response.status}`;
+                    try {
+                        const errData = await response.json();
+                        errorMsg = errData.error?.message || errorMsg;
+                    } catch (e) {}
+                    throw new Error(errorMsg);
+                }
+
+                const data = await response.json();
+                const reply = data.choices[0].message.content;
+                messagesHistory.push({ role: 'assistant', content: reply });
+                addMessageToChat('assistant', reply);
+            } catch (error) {
+                removeTypingIndicator();
+                addMessageToChat('assistant', `❌ Ошибка: ${error.message}`);
+            } finally {
+                userInput.disabled = false;
+                sendBtn.disabled = false;
+                userInput.focus();
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !sendBtn.disabled) sendMessage();
+        });
+
+        loadStoredSettings();
+        if (!apiKey) {
+            userInput.disabled = true;
+            sendBtn.disabled = true;
+        }
+    })();
+</script>
+</body>
+</html>

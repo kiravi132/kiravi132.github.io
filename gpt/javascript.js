@@ -1,0 +1,1 @@
+const response = await fetch('https://kira-proxy.onrender.com/v1/chat/completions', { ... })
