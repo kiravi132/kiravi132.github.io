@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>Модификации телефона | Вибрация, Фонарик, Эффекты</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%);
+      font-family: 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 550px;
+      width: 100%;
+      background: rgba(18, 25, 45, 0.75);
+      backdrop-filter: blur(16px);
+      border-radius: 56px;
+      padding: 24px 20px 32px;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s ease;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #E6F7FF, #A0D2FF);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-align: center;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .sub {
+      text-align: center;
+      color: #8e9fc3;
+      font-size: 0.85rem;
+      margin-bottom: 28px;
+      border-bottom: 1px dashed rgba(100, 150, 255, 0.3);
+      display: inline-block;
+      width: auto;
+      margin-left: auto;
+      margin-right: auto;
+      padding-bottom: 8px;
+    }
+
+    .badge-group {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 6px 14px;
+      border-radius: 60px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #bbd4ff;
+      backdrop-filter: blur(4px);
+      border: 0.5px solid rgba(255,255,255,0.2);
+    }
+
+    .badge i {
+      font-style: normal;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    .card {
+      background: rgba(12, 18, 28, 0.7);
+      border-radius: 42px;
+      padding: 18px 16px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(72, 120, 255, 0.25);
+      transition: all 0.2s;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #cbe4ff;
+      margin-bottom: 18px;
+      padding-left: 8px;
+    }
+
+    .section-title span {
+      font-size: 1.5rem;
+    }
+
+    .grid-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+    }
+
+    .btn {
+      flex: 1 0 auto;
+      min-width: 130px;
+      background: #1e2a3e;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 80px;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #f0f4ff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      backdrop-filter: blur(8px);
+      transition: 0.2s;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+      background: #2a3b55;
+    }
+
+    .btn-primary {
+      background: #2b4b9e;
+      box-shadow: 0 4px 12px rgba(33, 101, 255, 0.3);
+    }
+    .btn-primary:active { background: #1f3c7c; }
+
+    .btn-warning {
+      background: #9e5a2b;
+      box-shadow: 0 4px 12px rgba(255, 120, 40, 0.2);
+    }
+    .btn-warning:active { background: #7e481f; }
+
+    .btn-danger {
+      background: #8b2c2c;
+    }
+    .btn-danger:active { background: #6e2323; }
+
+    .btn-success {
+      background: #1f6e43;
+    }
+
+    .status-area {
+      background: #0b0f18cc;
+      border-radius: 28px;
+      padding: 14px 18px;
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: #b7cdff;
+      text-align: center;
+      border-left: 3px solid #3c7eff;
+    }
+
+    .status-text {
+      font-family: monospace;
+      word-break: break-word;
+    }
+
+    .flash-warning {
+      font-size: 0.7rem;
+      margin-top: 8px;
+      color: #ffb347;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #4f6188;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 18px 16px 24px; }
+      .btn { min-width: 110px; padding: 10px 14px; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📱 Mods Tool</h1>
+  <div style="text-align: center;">
+    <div class="sub">вибрация • фонарик • мигание • эффекты</div>
+  </div>
+  <div class="badge-group">
+    <div class="badge"><i>📳</i> Vibration API</div>
+    <div class="badge"><i>🔦</i> Torch / Flashlight</div>
+    <div class="badge"><i>✨</i> Web Audio + UI</div>
+  </div>
+
+  <!-- Блок вибрации -->
+  <div class="card">
+    <div class="section-title">
+      <span>📳</span> Вибрация
+    </div>
+    <div class="grid-buttons">
+      <button class="btn btn-primary" id="vibeShort">Короткая</button>
+      <button class="btn btn-primary" id="vibeLong">Длинная (1с)</button>
+      <button class="btn btn-primary" id="vibePattern">Паттерн •••</button>
+      <button class="btn" id="vibeStop">⏹️ Остановить</button>
+    </div>
+  </div>
+
+  <!-- Блок фонарика (Torch) -->
+  <div class="card">
+    <div class="section-title">
+      <span>🔦</span> Фонарик / Вспышка
+    </div>
+    <div class="grid-buttons">
+      <button class="btn btn-success" id="torchOn">🔛 Включить</button>
+      <button class="btn btn-danger" id="torchOff">⛔ Выключить</button>
+      <button class="btn btn-warning" id="torchBlinkStart">✨ Мигать (5 сек)</button>
+      <button class="btn" id="torchBlinkStop">🛑 Стоп мигание</button>
+    </div>
+    <div class="flash-warning" id="torchStatusMsg">⚡ Для фонарика нужно разрешение камеры. Нажмите "Включить" впервые — браузер запросит доступ.</div>
+  </div>
+
+  <!-- Блок "Другое" — креативные моды -->
+  <div class="card">
+    <div class="section-title">
+      <span>✨</span> Другие модификации
+    </div>
+    <div class="grid-buttons">
+      <button class="btn" id="screenFlash">🌕 Вспышка экрана</button>
+      <button class="btn" id="rgbCycle">🌈 RGB пульсация</button>
+      <button class="btn" id="beepSound">🔊 Бип (звук)</button>
+      <button class="btn" id="comboVibeFlash">⚡ Вибрация+Вспышка</button>
+    </div>
+    <div class="status-area" id="statusArea">
+      <div class="status-text" id="statusMsg">✅ Готов к работе. Нажми любую функцию.</div>
+    </div>
+  </div>
+  <footer>
+    ⚡ Для Android / iOS (Safari, Chrome). Фонарик работает только на реальном устройстве. Вибрация — на поддерживаемых устройствах.
+  </footer>
+</div>
+
+<script>
+  (function(){
+    // ---------- Элементы ----------
+    const statusDiv = document.getElementById('statusMsg');
+    const torchStatusMsg = document.getElementById('torchStatusMsg');
+
+    // Вибрация
+    const vibeShort = document.getElementById('vibeShort');
+    const vibeLong = document.getElementById('vibeLong');
+    const vibePattern = document.getElementById('vibePattern');
+    const vibeStop = document.getElementById('vibeStop');
+
+    // Фонарик (torch)
+    const torchOn = document.getElementById('torchOn');
+    const torchOff = document.getElementById('torchOff');
+    const torchBlinkStart = document.getElementById('torchBlinkStart');
+    const torchBlinkStop = document.getElementById('torchBlinkStop');
+
+    // Другое
+    const screenFlash = document.getElementById('screenFlash');
+    const rgbCycle = document.getElementById('rgbCycle');
+    const beepSound = document.getElementById('beepSound');
+    const comboVibeFlash = document.getElementById('comboVibeFlash');
+
+    // ---------- Глобальные переменные для фонарика ----------
+    let mediaStream = null;          // видеопоток
+    let videoTrack = null;           // трек для управления torch
+    let torchSupported = false;       // поддержка torch
+    let isTorchOn = false;            // текущее состояние фонарика
+    let blinkInterval = null;         // интервал мигания
+    let rgbInterval = null;           // интервал RGB цикла
+
+    // ---------- Вспомогательные функции ----------
+    function updateStatus(msg, isError = false) {
+      statusDiv.innerHTML = msg;
+      statusDiv.style.color = isError ? '#ffaa88' : '#c3e0ff';
+      setTimeout(() => {
+        if(statusDiv.innerHTML === msg) statusDiv.style.color = '#c3e0ff';
+      }, 2000);
+    }
+
+    // Запрос доступа к камере (только для torch)
+    async function requestTorchAccess() {
+      // если уже есть поток и трек живой, проверим
+      if (mediaStream && videoTrack && videoTrack.readyState === 'live') {
+        updateStatus('🔦 Доступ к камере уже есть', false);
+        return true;
+      }
+      // закрываем предыдущие потоки
+      closeMediaStream();
+      try {
+        // Запрашиваем видео (задняя камера идеально, но достаточно любой)
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        mediaStream = stream;
+        videoTrack = stream.getVideoTracks()[0];
+        if (!videoTrack) throw new Error('Нет видеотрека');
+        
+        // Проверяем поддержку torch
+        const capabilities = videoTrack.getCapabilities ? videoTrack.getCapabilities() : null;
+        if (capabilities && capabilities.torch === true) {
+          torchSupported = true;
+          torchStatusMsg.innerHTML = '✅ Фонарик готов! Можно включать/мигать.';
+          updateStatus('🔦 Фонарик активирован. Поддержка есть.', false);
+        } else {
+          torchSupported = false;
+          torchStatusMsg.innerHTML = '⚠️ Ваше устройство/браузер не поддерживает программное управление фонариком (Torch API). Но попробуйте включить вручную на некоторых Android может сработать.';
+          updateStatus('⚠️ Torch не поддерживается на этом устройстве.', true);
+        }
+        return true;
+      } catch (err) {
+        console.error('Ошибка доступа к камере:', err);
+        torchSupported = false;
+        torchStatusMsg.innerHTML = '❌ Нет разрешения на камеру или ошибка. Фонарик недоступен.';
+        updateStatus('❌ Разрешение на камеру не получено. Фонарик не работает.', true);
+        return false;
+      }
+    }
+
+    // закрыть видеопоток (освободить камеру)
+    function closeMediaStream() {
+      if (blinkInterval) {
+        clearInterval(blinkInterval);
+        blinkInterval = null;
+      }
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => {
+          if (track.readyState === 'live') track.stop();
+        });
+        mediaStream = null;
+        videoTrack = null;
+      }
+      isTorchOn = false;
+      torchSupported = false;
+    }
+
+    // установка состояния torch (вкл/выкл)
+    async function setTorch(state) {
+      if (!videoTrack) {
+        // попробуем запросить доступ
+        const granted = await requestTorchAccess();
+        if (!granted || !videoTrack) {
+          updateStatus('🔦 Нет доступа к камере, фонарик не включить', true);
+          return false;
+        }
+      }
+      if (!torchSupported) {
+        // если capabilities.torch === false, но может попробовать принудительно (редко)
+        updateStatus('⚠️ Ваш браузер/устройство не поддерживает torch через API.', true);
+        return false;
+      }
+      try {
+        await videoTrack.applyConstraints({ advanced: [{ torch: state }] });
+        isTorchOn = state;
+        updateStatus(`🔦 Фонарик ${state ? 'включен' : 'выключен'}`, false);
+        return true;
+      } catch (e) {
+        console.warn(e);
+        updateStatus('Ошибка управления фонариком: ' + e.message, true);
+        return false;
+      }
+    }
+
+    // выключить torch и остановить мигание
+    async function turnOffTorchSafe() {
+      if (blinkInterval) {
+        clearInterval(blinkInterval);
+        blinkInterval = null;
+      }
+      if (videoTrack && torchSupported) {
+        try {
+          await videoTrack.applyConstraints({ advanced: [{ torch: false }] });
+          isTorchOn = false;
+        } catch(e) {}
+      }
+    }
+
+    // мигание заданное количество раз (по умолчанию длительность)
+    function startBlinkTorch(durationSec = 5, intervalMs = 300) {
+      if (!torchSupported) {
+        updateStatus('❌ Нет поддержки фонарика для мигания', true);
+        return false;
+      }
+      if (blinkInterval) clearInterval(blinkInterval);
+      let count = 0;
+      const maxToggles = Math.floor((durationSec * 1000) / intervalMs);
+      let toggleState = false;
+      // сначала убедимся что выключен
+      setTorch(false).catch(()=>{});
+      blinkInterval = setInterval(async () => {
+        if (count >= maxToggles) {
+          clearInterval(blinkInterval);
+          blinkInterval = null;
+          await setTorch(false);
+          updateStatus('✨ Мигание завершено', false);
+          return;
+        }
+        toggleState = !toggleState;
+        await setTorch(toggleState);
+        count++;
+      }, intervalMs);
+      return true;
+    }
+
+    function stopBlinking() {
+      if (blinkInterval) {
+        clearInterval(blinkInterval);
+        blinkInterval = null;
+        setTorch(false).catch(()=>{});
+        updateStatus('🛑 Мигание остановлено', false);
+      }
+    }
+
+    // ---------- Вибрация (Vibration API) ----------
+    function vibrateDevice(pattern) {
+      if (!window.navigator || !window.navigator.vibrate) {
+        updateStatus('❌ Ваше устройство не поддерживает вибрацию (Vibration API)', true);
+        return false;
+      }
+      try {
+        let result = window.navigator.vibrate(pattern);
+        if (result) updateStatus(`📳 Вибрация ${Array.isArray(pattern) ? 'паттерн' : pattern+'ms'} запущена`, false);
+        else updateStatus('⚠️ Вибрация не активирована (возможно заблокировано)', true);
+        return result;
+      } catch(e) {
+        updateStatus('Ошибка вибрации', true);
+        return false;
+      }
+    }
+
+    function stopVibration() {
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(0);
+        updateStatus('⏹️ Вибрация остановлена', false);
+      } else {
+        updateStatus('Вибрация не поддерживается', true);
+      }
+    }
+
+    // ---------- Дополнительные моды ----------
+    // Вспышка экрана (screen flash)
+    function doScreenFlash() {
+      const overlay = document.createElement('div');
+      overlay.style.position = 'fixed';
+      overlay.style.top = '0';
+      overlay.style.left = '0';
+      overlay.style.width = '100%';
+      overlay.style.height = '100%';
+      overlay.style.backgroundColor = 'white';
+      overlay.style.zIndex = '9999';
+      overlay.style.pointerEvents = 'none';
+      overlay.style.transition = 'opacity 0.2s';
+      document.body.appendChild(overlay);
+      setTimeout(() => {
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.remove(), 200);
+      }, 80);
+      updateStatus('✨ Вспышка экрана', false);
+    }
+
+    // RGB пульсация фона
+    function startRgbPulse() {
+      if (rgbInterval) {
+        clearInterval(rgbInterval);
+        rgbInterval = null;
+        document.body.style.backgroundColor = '';
+        document.body.style.transition = '';
+        updateStatus('🌈 RGB пульсация остановлена', false);
+        return;
+      }
+      let hue = 0;
+      document.body.style.transition = 'background-color 0.1s linear';
+      rgbInterval = setInterval(() => {
+        hue = (hue + 6) % 360;
+        document.body.style.backgroundColor = `hsl(${hue}, 80%, 15%)`;
+      }, 80);
+      updateStatus('🌈 RGB пульсация активна (нажмите ещё раз для остановки)', false);
+    }
+
+    // Звуковой сигнал (Web Audio)
+    function playBeep() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.frequency.value = 880;
+        gainNode.gain.value = 0.3;
+        oscillator.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+        oscillator.stop(audioCtx.currentTime + 0.3);
+        updateStatus('🔊 Бип!', false);
+        // resume audio context if suspended
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+      } catch(e) {
+        updateStatus('Ошибка воспроизведения звука: ' + e.message, true);
+      }
+    }
+
+    // Комбо: вибрация + вспышка экрана + мигание фонариком (если доступен)
+    async function comboVibeFlashAction() {
+      updateStatus('⚡ Запуск комбо: вибрация + визуальные эффекты', false);
+      // вибрация короткая + паттерн
+      vibrateDevice([200, 100, 200]);
+      doScreenFlash();
+      playBeep();
+      // если фонарик поддерживается — добавим мигание 3 раза быстро
+      if (torchSupported && videoTrack) {
+        try {
+          await setTorch(true);
+          setTimeout(async () => {
+            await setTorch(false);
+            setTimeout(async () => {
+              await setTorch(true);
+              setTimeout(async () => {
+                await setTorch(false);
+              }, 150);
+            }, 100);
+          }, 100);
+        } catch(e) {}
+      } else {
+        // попробуем запросить разрешение для будущих комбинаций
+        requestTorchAccess();
+      }
+    }
+
+    // ---------- Обработчики событий ----------
+    vibeShort.onclick = () => vibrateDevice(200);
+    vibeLong.onclick = () => vibrateDevice(1000);
+    vibePattern.onclick = () => vibrateDevice([300, 100, 300, 100, 600]);
+    vibeStop.onclick = () => stopVibration();
+
+    // фонарик включить / выключить
+    torchOn.onclick = async () => {
+      if (!torchSupported) {
+        const granted = await requestTorchAccess();
+        if (!granted || !torchSupported) {
+          updateStatus('Не удалось активировать фонарик, проверьте разрешения', true);
+          return;
+        }
+      }
+      setTorch(true);
+    };
+    torchOff.onclick = async () => {
+      await turnOffTorchSafe();
+      updateStatus('Фонарик выключен', false);
+    };
+    torchBlinkStart.onclick = async () => {
+      if (!torchSupported) {
+        const granted = await requestTorchAccess();
+        if (!granted || !torchSupported) {
+          updateStatus('Мигание недоступно: нет поддержки фонарика', true);
+          return;
+        }
+      }
+      startBlinkTorch(5, 250);
+    };
+    torchBlinkStop.onclick = () => {
+      stopBlinking();
+    };
+
+    // другие
+    screenFlash.onclick = () => doScreenFlash();
+    rgbCycle.onclick = () => startRgbPulse();
+    beepSound.onclick = () => playBeep();
+    comboVibeFlash.onclick = () => comboVibeFlashAction();
+
+    // При загрузке попробуем проверить поддержку вибрации и вывести статус
+    if (!window.navigator || !window.navigator.vibrate) {
+      updateStatus('⚠️ Ваш браузер НЕ поддерживает вибрацию (Vibration API).', true);
+    } else {
+      updateStatus('✅ Вибрация доступна. Фонарик активируется по нажатию.', false);
+    }
+
+    // Очистка ресурсов при выгрузке страницы
+    window.addEventListener('beforeunload', () => {
+      if (blinkInterval) clearInterval(blinkInterval);
+      if (rgbInterval) clearInterval(rgbInterval);
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+      }
+    });
+  })();
+</script>
+</body>
+</html>
