@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Рулетка</title>
+    <title>Рулетка 777</title>
     <style>
         * {
             margin: 0;
@@ -18,53 +18,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', 'Poppins', 'Orbitron', 'Courier New', monospace;
+            font-family: 'Segoe UI', 'Orbitron', monospace;
             padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.08), transparent 70%);
-            pointer-events: none;
         }
 
         .casino-container {
-            max-width: 750px;
+            max-width: 600px;
             width: 100%;
             background: rgba(10, 14, 23, 0.75);
             backdrop-filter: blur(8px);
-            border-radius: 4rem;
-            padding: 2rem 1.8rem 2.5rem;
+            border-radius: 3rem;
+            padding: 2rem;
             box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 215, 0, 0.3);
-            transition: all 0.2s;
-        }
-
-        .title {
             text-align: center;
-            margin-bottom: 2rem;
-        }
-        .title h1 {
-            font-size: 2.6rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #FFD966, #FFB347, #FF8C42);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            letter-spacing: 3px;
-            font-family: 'Orbitron', monospace;
-        }
-        .title p {
-            color: #b9c7d9;
-            font-size: 0.9rem;
-            margin-top: 8px;
-            letter-spacing: 1px;
         }
 
         .slot-machine {
@@ -72,7 +39,7 @@
             justify-content: center;
             gap: 1.2rem;
             flex-wrap: wrap;
-            margin: 2rem 0 2rem;
+            margin: 2rem 0;
         }
 
         .reel {
@@ -84,22 +51,18 @@
             align-items: center;
             justify-content: center;
             box-shadow: inset 0 0 12px rgba(0,0,0,0.6), 0 12px 20px rgba(0,0,0,0.4), 0 0 0 2px rgba(255, 200, 50, 0.2);
-            transition: all 0.2s ease;
-            position: relative;
             background: linear-gradient(145deg, #0b101a, #070b12);
         }
 
         .reel span {
             font-size: 5.5rem;
             font-weight: 800;
-            font-family: 'Orbitron', 'Courier New', monospace;
+            font-family: 'Orbitron', monospace;
             color: #FFD966;
             text-shadow: 0 0 8px #ffaa33, 0 2px 4px black;
-            transition: transform 0.1s ease;
             display: inline-block;
         }
 
-        /* анимация финальной остановки */
         .stop-pop {
             animation: finalPop 0.2s cubic-bezier(0.34, 1.2, 0.64, 1);
         }
@@ -113,8 +76,9 @@
         .spin-btn {
             display: flex;
             justify-content: center;
-            margin: 20px 0 25px;
+            margin-top: 1rem;
         }
+
         button {
             background: radial-gradient(circle at 30% 10%, #FFB347, #E67E22);
             border: none;
@@ -130,51 +94,24 @@
             box-shadow: 0 10px 0 #9b4a0e, 0 5px 20px rgba(0,0,0,0.3);
             transition: 0.07s linear;
             width: 280px;
-            backdrop-filter: blur(2px);
         }
+
         button:active {
             transform: translateY(5px);
             box-shadow: 0 5px 0 #9b4a0e;
         }
+
         button:disabled {
             opacity: 0.6;
             transform: translateY(0);
             cursor: not-allowed;
-            filter: grayscale(0.1);
         }
 
-        .info {
-            text-align: center;
-            margin-top: 1rem;
-            font-size: 1rem;
-            background: rgba(0,0,0,0.5);
-            border-radius: 50px;
-            padding: 10px 20px;
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
-            backdrop-filter: blur(4px);
-        }
-        .info span {
-            color: #ffbc6e;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-        .jackpot-message {
-            margin-top: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #f5b642;
-            text-shadow: 0 0 3px red;
-            min-height: 70px;
-            transition: 0.2s;
-            text-align: center;
+        .reel-win {
+            box-shadow: 0 0 0 3px #FFD700, inset 0 0 20px gold;
         }
 
         @media (max-width: 550px) {
-            .casino-container {
-                padding: 1.2rem;
-            }
             .reel {
                 width: 85px;
                 height: 100px;
@@ -187,38 +124,11 @@
                 font-size: 1.4rem;
                 width: 230px;
             }
-            .title h1 {
-                font-size: 2rem;
-            }
-        }
-
-        @keyframes glitter {
-            0% { text-shadow: 0 0 2px gold; }
-            100% { text-shadow: 0 0 18px #ff6600, 0 0 8px yellow; }
-        }
-        .jackpot-glow {
-            animation: glitter 0.4s infinite alternate;
-        }
-        .reel-win {
-            box-shadow: 0 0 0 3px #FFD700, inset 0 0 20px gold;
-            transition: 0.1s;
-        }
-        footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.7rem;
-            color: #5a6e8a;
         }
     </style>
 </head>
 <body>
-
 <div class="casino-container">
-    <div class="title">
-        <h1>🎰 Крути 🎰</h1>
-        <p></p>
-    </div>
-
     <div class="slot-machine">
         <div class="reel" id="reel1">
             <span id="num1">0</span>
@@ -234,72 +144,40 @@
     <div class="spin-btn">
         <button id="spinButton">🌀 SPIN 🌀</button>
     </div>
-
-    <div class="info">
-        ⚡ <span>Счастливая комбинация: 7 • 7 • 7</span> ⚡<br>
-        <small>выпадет 777 — вас перенесёт в особое измерение</small>
-    </div>
-    <div class="jackpot-message" id="jackpotMsg">
-        ✨ готов к игре? ✨
-    </div>
-    <footer>
-        🎲 честный рандом | долгая прокрутка барабанов
-    </footer>
 </div>
 
 <script>
     (function() {
-        // DOM элементы
         const num1El = document.getElementById('num1');
         const num2El = document.getElementById('num2');
         const num3El = document.getElementById('num3');
         const spinBtn = document.getElementById('spinButton');
-        const jackpotMsgDiv = document.getElementById('jackpotMsg');
         const reels = [document.getElementById('reel1'), document.getElementById('reel2'), document.getElementById('reel3')];
         
-        let isSpinning = false;          // блокировка во время вращения
-        let redirectTimeout = null;      // таймер редиректа
-        let spinIntervals = [null, null, null]; // для хранения интервалов прокрутки
+        let isSpinning = false;
+        let redirectTimeout = null;
 
-        // Генерация случайного числа от 0 до 9
         function getRandomNumber() {
             return Math.floor(Math.random() * 10);
         }
 
-        // Функция "долгого выпадания" для одного барабана
-        // durationMs - общая длительность прокрутки, intervalMs - частота смены цифр
-        // finalValue - значение, на котором нужно остановиться
-        // Возвращает Promise, который разрешается после остановки
-        function longSpinReel(reelElement, spanElement, finalValue, durationMs = 900, intervalMs = 65) {
+        function longSpinReel(reelElement, spanElement, finalValue, durationMs = 900, intervalMs = 55) {
             return new Promise((resolve) => {
-                // сохраняем текущий интервал, если вдруг уже есть (чистка на всякий случай)
                 let intervalId = null;
                 const startTime = performance.now();
                 
-                // функция, которая генерирует случайную цифру и обновляет span
                 const updateRandom = () => {
                     const randomDigit = getRandomNumber();
                     spanElement.innerText = randomDigit;
                 };
                 
-                // запускаем быструю смену цифр
                 intervalId = setInterval(updateRandom, intervalMs);
                 
-                // по истечении времени останавливаем интервал и ставим финальное число с анимацией
-                const elapsed = () => {
-                    const now = performance.now();
-                    return now - startTime;
-                };
-                
                 const checkFinish = () => {
-                    if (elapsed() >= durationMs) {
-                        // останавливаем интервал
+                    if (performance.now() - startTime >= durationMs) {
                         if (intervalId) clearInterval(intervalId);
-                        // финальная установка числа с анимацией
                         spanElement.innerText = finalValue;
-                        // добавляем эффект "пружинки"
                         spanElement.classList.add('stop-pop');
-                        // подсветка рамки
                         reelElement.classList.add('reel-win');
                         setTimeout(() => {
                             spanElement.classList.remove('stop-pop');
@@ -315,7 +193,6 @@
             });
         }
 
-        // Запуск долгого вращения для всех трёх барабанов одновременно
         async function longSpinAll(finalNumbers) {
             const promises = [];
             for (let i = 0; i < 3; i++) {
@@ -326,16 +203,12 @@
             await Promise.all(promises);
         }
 
-        // проверка на джекпот
         function isJackpot(numbers) {
             return numbers[0] === 7 && numbers[1] === 7 && numbers[2] === 7;
         }
 
-        // редирект на целевой сайт
         function redirectToJackpotSite() {
             if (redirectTimeout) return;
-            jackpotMsgDiv.innerHTML = '💥🔥 ДЖЕКПОТ! 7-7-7! 🔥💥<br>✨ перенаправление через 1 секунду... ✨';
-            jackpotMsgDiv.classList.add('jackpot-glow');
             
             reels.forEach(reel => {
                 reel.style.transition = 'box-shadow 0.2s';
@@ -350,7 +223,6 @@
             }, 1000);
         }
 
-        // сброс временных эффектов и таймеров
         function resetVisualEffects() {
             reels.forEach(reel => {
                 reel.style.boxShadow = '';
@@ -362,56 +234,37 @@
             }
         }
 
-        // основной обработчик клика
         async function onSpinClick() {
-            if (isSpinning) return;
-            if (spinBtn.disabled) return;
+            if (isSpinning || spinBtn.disabled) return;
             
-            // чистим предыдущие таймеры и подсветки, если были
             resetVisualEffects();
             
-            // генерируем финальную комбинацию
             const finalNumbers = [
                 getRandomNumber(),
                 getRandomNumber(),
                 getRandomNumber()
             ];
             
-            // блокируем кнопку и запускаем долгую анимацию
             isSpinning = true;
             spinBtn.disabled = true;
             
-            // промежуточное сообщение
-            jackpotMsgDiv.innerHTML = '🎡 барабаны крутятся... ждите результата 🎡';
-            jackpotMsgDiv.classList.remove('jackpot-glow');
-            
-            // запускаем долгое выпадание
             await longSpinAll(finalNumbers);
             
-            // после окончания вращения проверяем джекпот
             if (isJackpot(finalNumbers)) {
                 redirectToJackpotSite();
-                // isSpinning остаётся true, кнопка disabled, редирект скоро
                 return;
             } else {
-                // обычный результат
-                jackpotMsgDiv.innerHTML = `🎲 результат: ${finalNumbers[0]} ${finalNumbers[1]} ${finalNumbers[2]} 🎲<br>повезёт в следующий раз!`;
-                // снимаем блокировку
                 isSpinning = false;
                 spinBtn.disabled = false;
             }
         }
         
-        // назначение обработчика
         spinBtn.addEventListener('click', onSpinClick);
         
-        // инициализация стартовыми числами (не 777, чтобы сразу не уйти)
-        const startNums = [3, 5, 7];
-        num1El.innerText = startNums[0];
-        num2El.innerText = startNums[1];
-        num3El.innerText = startNums[2];
-        
-        console.log('🎰 ');
+        // начальные значения (не 777)
+        num1El.innerText = '3';
+        num2El.innerText = '5';
+        num3El.innerText = '7';
     })();
 </script>
 </body>
