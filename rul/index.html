@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Рулетка 777 | Счастливый билет</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Poppins', 'Orbitron', 'Courier New', monospace;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Атмосферные блики */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.08), transparent 70%);
+            pointer-events: none;
+        }
+
+        .casino-container {
+            max-width: 750px;
+            width: 100%;
+            background: rgba(10, 14, 23, 0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 4rem;
+            padding: 2rem 1.8rem 2.5rem;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            transition: all 0.2s;
+        }
+
+        /* Заголовок */
+        .title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .title h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFD966, #FFB347, #FF8C42);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            letter-spacing: 3px;
+            font-family: 'Orbitron', monospace;
+        }
+        .title p {
+            color: #b9c7d9;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* Игровые барабаны */
+        .slot-machine {
+            display: flex;
+            justify-content: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            margin: 2rem 0 2rem;
+        }
+
+        .reel {
+            background: #11151f;
+            width: 130px;
+            height: 150px;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.6), 0 12px 20px rgba(0,0,0,0.4), 0 0 0 2px rgba(255, 200, 50, 0.2);
+            transition: all 0.2s ease;
+            position: relative;
+            background: linear-gradient(145deg, #0b101a, #070b12);
+        }
+
+        .reel span {
+            font-size: 5.5rem;
+            font-weight: 800;
+            font-family: 'Orbitron', 'Courier New', monospace;
+            color: #FFD966;
+            text-shadow: 0 0 8px #ffaa33, 0 2px 4px black;
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            display: inline-block;
+        }
+
+        /* анимация прокрутки */
+        .spin-animation {
+            animation: reelPop 0.25s ease-out;
+        }
+
+        @keyframes reelPop {
+            0% { transform: scale(0.8) rotate(-10deg); opacity: 0.5; }
+            70% { transform: scale(1.2) rotate(2deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        /* кнопка спина */
+        .spin-btn {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 25px;
+        }
+        button {
+            background: radial-gradient(circle at 30% 10%, #FFB347, #E67E22);
+            border: none;
+            padding: 18px 45px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: 'Orbitron', monospace;
+            color: #1e1a0c;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 0 10px 0 #9b4a0e, 0 5px 20px rgba(0,0,0,0.3);
+            transition: 0.07s linear;
+            width: 280px;
+            backdrop-filter: blur(2px);
+        }
+        button:active {
+            transform: translateY(5px);
+            box-shadow: 0 5px 0 #9b4a0e;
+        }
+        button:disabled {
+            opacity: 0.6;
+            transform: translateY(0);
+            cursor: not-allowed;
+            filter: grayscale(0.1);
+        }
+
+        /* инфо-панель */
+        .info {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 1rem;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50px;
+            padding: 10px 20px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            backdrop-filter: blur(4px);
+        }
+        .info span {
+            color: #ffbc6e;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .jackpot-message {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #f5b642;
+            text-shadow: 0 0 3px red;
+            min-height: 60px;
+            transition: 0.2s;
+        }
+
+        /* адаптивность */
+        @media (max-width: 550px) {
+            .casino-container {
+                padding: 1.2rem;
+            }
+            .reel {
+                width: 85px;
+                height: 100px;
+            }
+            .reel span {
+                font-size: 3.6rem;
+            }
+            button {
+                padding: 12px 25px;
+                font-size: 1.4rem;
+                width: 230px;
+            }
+            .title h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* искры для джекпота */
+        @keyframes glitter {
+            0% { text-shadow: 0 0 2px gold; }
+            100% { text-shadow: 0 0 18px #ff6600, 0 0 8px yellow; }
+        }
+        .jackpot-glow {
+            animation: glitter 0.4s infinite alternate;
+        }
+        .reel-win {
+            box-shadow: 0 0 0 3px #FFD700, inset 0 0 20px gold;
+            transition: 0.1s;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.7rem;
+            color: #5a6e8a;
+        }
+    </style>
+</head>
+<body>
+
+<div class="casino-container">
+    <div class="title">
+        <h1>🎰 SLOT 777 🎰</h1>
+        <p>нажми на барабан — поймай удачу</p>
+    </div>
+
+    <div class="slot-machine">
+        <div class="reel" id="reel1">
+            <span id="num1">0</span>
+        </div>
+        <div class="reel" id="reel2">
+            <span id="num2">0</span>
+        </div>
+        <div class="reel" id="reel3">
+            <span id="num3">0</span>
+        </div>
+    </div>
+
+    <div class="spin-btn">
+        <button id="spinButton">🌀 SPIN 🌀</button>
+    </div>
+
+    <div class="info">
+        ⚡ <span>Счастливая комбинация: 7 • 7 • 7</span> ⚡<br>
+        <small>выпадет 777 — вас перенесёт в особое измерение</small>
+    </div>
+    <div class="jackpot-message" id="jackpotMsg">
+        ✨ готов к игре? ✨
+    </div>
+    <footer>
+        🎲 честный рандом | рискни получить джекпот
+    </footer>
+</div>
+
+<script>
+    (function() {
+        // DOM элементы
+        const num1El = document.getElementById('num1');
+        const num2El = document.getElementById('num2');
+        const num3El = document.getElementById('num3');
+        const spinBtn = document.getElementById('spinButton');
+        const jackpotMsgDiv = document.getElementById('jackpotMsg');
+        const reels = [document.getElementById('reel1'), document.getElementById('reel2'), document.getElementById('reel3')];
+        
+        let isSpinning = false;      // блокировка повторных кликов во время анимации
+        let redirectTimeout = null;   // таймер редиректа (чтобы не было двойного перехода)
+
+        // Функция генерации случайного числа от 0 до 9 (классический слот, 0-9)
+        function getRandomNumber() {
+            return Math.floor(Math.random() * 10);  // 0...9
+        }
+
+        // Функция для визуального эффекта "прокрутки" каждого барабана с финальным числом
+        async function animateReel(reelElement, numberSpan, finalValue, delayMs = 0) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    // добавляем анимацию нажатия
+                    numberSpan.classList.add('spin-animation');
+                    // меняем число мгновенно
+                    numberSpan.innerText = finalValue;
+                    
+                    // Подсветка рамки (быстрая)
+                    reelElement.classList.add('reel-win');
+                    setTimeout(() => {
+                        reelElement.classList.remove('reel-win');
+                    }, 200);
+                    
+                    setTimeout(() => {
+                        numberSpan.classList.remove('spin-animation');
+                        resolve();
+                    }, 260);
+                }, delayMs);
+            });
+        }
+
+        // Основная функция "вращения" всех трёх барабанов с эффектом последовательности
+        async function spinSlots(numbersArray) {
+            // убираем предыдущие сообщения и подсветки
+            jackpotMsgDiv.innerHTML = '🌀 крутим барабаны... 🌀';
+            jackpotMsgDiv.classList.remove('jackpot-glow');
+            
+            // анимация по очереди: сначала первый, через 80мс второй, через 80 третий
+            const anim1 = animateReel(reels[0], num1El, numbersArray[0], 0);
+            const anim2 = animateReel(reels[1], num2El, numbersArray[1], 80);
+            const anim3 = animateReel(reels[2], num3El, numbersArray[2], 160);
+            
+            await Promise.all([anim1, anim2, anim3]);
+        }
+
+        // проверка на джекпот (все три === 7)
+        function isJackpot(numbers) {
+            return numbers[0] === 7 && numbers[1] === 7 && numbers[2] === 7;
+        }
+
+        // выполнение редиректа на целевой сайт
+        function redirectToJackpotSite() {
+            // если уже есть активный таймер, не создаём новый
+            if (redirectTimeout) return;
+            
+            // Сначала показываем фанфарное сообщение и делаем эффекты
+            jackpotMsgDiv.innerHTML = '💥🔥 ДЖЕКПОТ! 7-7-7! 🔥💥<br>✨ перенаправление через 1 секунду... ✨';
+            jackpotMsgDiv.classList.add('jackpot-glow');
+            
+            // Дополнительно подсветим все барабаны золотом
+            reels.forEach(reel => {
+                reel.style.transition = 'box-shadow 0.2s';
+                reel.style.boxShadow = '0 0 0 4px gold, 0 0 25px #ffaa33, inset 0 0 15px #ffcc44';
+            });
+            
+            // вибрация если поддерживается (для ощущения)
+            if (navigator.vibrate) navigator.vibrate(200);
+            
+            // Отключаем кнопку, чтобы нельзя было нажать повторно
+            spinBtn.disabled = true;
+            
+            // Таймер редиректа (даём увидеть выигрыш)
+            redirectTimeout = setTimeout(() => {
+                // Финальный переход
+                window.location.href = 'https://kiravi132.github.io/qw';
+                // резерв на случай, если ссылка с https не сработает (но сработает)
+            }, 1000);
+        }
+
+        // Сброс состояния перед новой игрой (если был джекпот и мы не ушли)
+        function resetGameState() {
+            if (redirectTimeout) {
+                clearTimeout(redirectTimeout);
+                redirectTimeout = null;
+            }
+            // убираем эффекты подсветки с барабанов
+            reels.forEach(reel => {
+                reel.style.boxShadow = '';
+                reel.style.transition = '';
+            });
+            // включаем кнопку, если была отключена
+            spinBtn.disabled = false;
+            // убираем лишние сообщения если не джекпот
+            if (!jackpotMsgDiv.innerHTML.includes('ДЖЕКПОТ')) {
+                jackpotMsgDiv.classList.remove('jackpot-glow');
+            }
+        }
+
+        // обработчик нажатия на кнопку
+        async function onSpinClick() {
+            // если уже идет анимация или заблокировано из-за редиректа (кнопка disabled) — не реагируем
+            if (isSpinning) return;
+            if (spinBtn.disabled) return;   // дополнительная страховка
+            
+            // если существует неиспользованный таймер редиректа (крайний случай), чистим
+            if (redirectTimeout) {
+                clearTimeout(redirectTimeout);
+                redirectTimeout = null;
+            }
+            
+            // Генерируем 3 случайных числа
+            const newNumbers = [
+                getRandomNumber(),
+                getRandomNumber(),
+                getRandomNumber()
+            ];
+            
+            // Запускаем анимацию
+            isSpinning = true;
+            spinBtn.disabled = true;   // отключаем на время анимации
+            
+            // Выполняем "вращение" барабанов с новыми цифрами
+            await spinSlots(newNumbers);
+            
+            // Проверяем на джекпот после того, как числа отобразились
+            if (isJackpot(newNumbers)) {
+                // Если выпало 777 -> редирект (с эффектами)
+                // перед редиректом показываем пафосное сообщение, подсветка уже добавлена в spinSlots частично,
+                // но добавим яркий финиш
+                // (не вызываем повторно анимацию, просто вызываем редирект)
+                redirectToJackpotSite();
+                // isSpinning снимем, но кнопка уже disabled внутри редиректа.
+                // Однако мы НЕ должны позволять новые спины, пока не произойдёт редирект.
+                // оставляем isSpinning = true и spinBtn disabled останется true.
+                // но чтобы не было тупика, на случай если редирект по каким-то причинам не сработает (браузер блокирует)?
+                // сделаем защитный сброс через 4 секунды, если переход не произошёл (очень редкий случай)
+                setTimeout(() => {
+                    if (redirectTimeout) return;
+                    // если редирект не случился, разблокируем кнопку (но обычно переход выполняется)
+                    if (spinBtn.disabled && !redirectTimeout) {
+                        spinBtn.disabled = false;
+                        isSpinning = false;
+                        jackpotMsgDiv.innerHTML = '❓ осечка? попробуй ещё раз ❓';
+                    }
+                }, 4000);
+                return;   // останавливаем выполнение, не снимаем блокировку до редиректа
+            } else {
+                // Обычный выигрыш - не джекпот
+                // Показываем обычное сообщение
+                jackpotMsgDiv.innerHTML = `🎲 выпало: ${newNumbers[0]} ${newNumbers[1]} ${newNumbers[2]} 🎲<br>повезёт в следующий раз!`;
+                jackpotMsgDiv.classList.remove('jackpot-glow');
+                
+                // Убираем временные подсветки если были (кроме стандартных)
+                reels.forEach(reel => {
+                    reel.style.boxShadow = '';
+                });
+            }
+            
+            // Снимаем блокировку
+            isSpinning = false;
+            spinBtn.disabled = false;
+        }
+        
+        // Добавляем обработчик на кнопку
+        spinBtn.addEventListener('click', onSpinClick);
+        
+        // Инициализация: установим красивые стартовые цифры (например 0,0,0 или случайные но без джекпота)
+        // Для эстетики выставим 1,3,7 (не 777)
+        const initNumbers = [1, 3, 7];
+        num1El.innerText = initNumbers[0];
+        num2El.innerText = initNumbers[1];
+        num3El.innerText = initNumbers[2];
+        
+        // дополнительный бонус: если вдруг кто-то захочет подделать через консоль? не важно, главное UX
+        // предзагрузка стилей
+        console.log('🎰 Жми SPIN');
+        
+        // Обработка, чтобы если вкладка неактивна, таймер всё равно отработал честно
+        window.addEventListener('beforeunload', function() {
+            if (redirectTimeout) {
+                // очищаем таймер чтобы не мешать переходу, но перед выгрузкой страницы всё норм
+            }
+        });
+    })();
+</script>
+</body>
+</html>
