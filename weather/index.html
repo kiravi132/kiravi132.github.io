@@ -1,0 +1,756 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1a4a6f" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b2b3f" media="(prefers-color-scheme: dark)">
+    
+    <!-- PWA / Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231a4a6f'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white' font-family='system-ui'%3E☀️%3C/text%3E%3C/svg%3E">
+    <link rel="manifest" href="data:application/manifest+json,{}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Погода">
+    
+    <title>Погода KIRA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0b2b3f 0%, #1a4a6f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        /* карточка погоды */
+        .weather-card {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+        .weather-card:hover {
+            transform: scale(1.01);
+        }
+
+        /* шапка */
+        .header {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 1.2rem 1.8rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #FFF9E6, #D9EAF7);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+        }
+
+        /* блок поиска */
+        .search-section {
+            padding: 1.5rem 1.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            flex: 3;
+            min-width: 160px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: none;
+            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .input-group input:focus {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.7rem;
+            flex-wrap: wrap;
+            flex: 2;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            backdrop-filter: blur(4px);
+            padding: 0 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        button i {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .btn-primary {
+            background: #ffb347;
+            color: #1e2f3a;
+            border-color: #ffd966;
+        }
+
+        .btn-primary:hover {
+            background: #ffa01e;
+        }
+
+        /* контент погоды */
+        .weather-info {
+            padding: 1.8rem;
+            color: white;
+        }
+
+        .location {
+            font-size: 1.9rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .city-name {
+            background: rgba(0,0,0,0.3);
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            font-size: 1.4rem;
+            display: inline-block;
+        }
+
+        .weather-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 1.2rem 0;
+            gap: 1rem;
+        }
+
+        .temp-section {
+            display: flex;
+            align-items: baseline;
+            gap: 0.3rem;
+        }
+
+        .temperature {
+            font-size: 4.2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .celsius {
+            font-size: 1.6rem;
+            font-weight: 500;
+        }
+
+        .weather-icon {
+            font-size: 3.8rem;
+            background: rgba(255,255,240,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 60px;
+            backdrop-filter: blur(8px);
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 2rem;
+            padding: 1.2rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .detail-label {
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .error-message {
+            background: rgba(220, 53, 69, 0.9);
+            padding: 0.8rem;
+            border-radius: 1.5rem;
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* футер со ссылкой */
+        .footer {
+            text-align: center;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 0, 0, 0.25);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .footer a {
+            color: #ffdfa5;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+            color: white;
+        }
+
+        .api-badge {
+            font-size: 0.7rem;
+            margin-top: 0.3rem;
+            opacity: 0.7;
+        }
+
+        /* инструкция по добавлению на главный экран */
+        .add-to-home {
+            background: rgba(0,0,0,0.3);
+            margin: 0 1.8rem 1.5rem 1.8rem;
+            border-radius: 2rem;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .add-text {
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .add-text span:first-child {
+            font-weight: 600;
+        }
+        .howto-btn {
+            background: rgba(255,255,200,0.2);
+            border: 1px solid rgba(255,255,200,0.5);
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            color: white;
+        }
+        .howto-btn:hover {
+            background: rgba(255,255,200,0.4);
+        }
+
+        /* модальное окно с инструкцией */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #1e3a4d;
+            max-width: 320px;
+            width: 85%;
+            border-radius: 2rem;
+            padding: 1.8rem;
+            text-align: center;
+            color: white;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .modal-content h3 {
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+        .modal-steps {
+            text-align: left;
+            margin: 1rem 0;
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 1rem;
+        }
+        .modal-steps li {
+            margin-left: 1.2rem;
+            margin-bottom: 0.6rem;
+            line-height: 1.3;
+        }
+        .close-modal {
+            background: #ffb347;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: bold;
+            margin-top: 0.8rem;
+            cursor: pointer;
+            color: #1e2f3a;
+        }
+        @media (max-width: 500px) {
+            .weather-card {
+                border-radius: 1.8rem;
+            }
+            .temperature {
+                font-size: 3.2rem;
+            }
+            .city-name {
+                font-size: 1.2rem;
+            }
+            .location {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="weather-card">
+    <div class="header">
+        <h1>🌤️ Живой прогноз</h1>
+        <p>Бесплатное API • Точные данные • Open-Meteo</p>
+    </div>
+
+    <div class="search-section">
+        <div class="input-group">
+            <input type="text" id="cityInput" placeholder="Город, например: Москва, London, Tokyo" value="Санкт-Петербург">
+        </div>
+        <div class="btn-group">
+            <button id="searchBtn" class="btn-primary">🔍 Найти</button>
+            <button id="locationBtn">📍 Моё местоположение</button>
+        </div>
+    </div>
+
+    <!-- Блок с предложением добавить на главный экран -->
+    <div class="add-to-home">
+        <div class="add-text">
+            <span>📱 Добавить на главный экран iPhone</span>
+            <span style="font-size:0.7rem;">(как виджет)</span>
+        </div>
+        <button class="howto-btn" id="howtoBtn">Как это сделать?</button>
+    </div>
+
+    <div class="weather-info" id="weatherContent">
+        <!-- Динамическая загрузка -->
+        <div class="loading">
+            <div class="spinner"></div>
+            <span>Загружаем погоду...</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span>🔗 Основной сайт: </span>
+        <a href="https://kiravi132.github.io" target="_blank" rel="noopener noreferrer">kiravi132.github.io</a>
+        <div class="api-badge">⚡ Данные предоставлены Open-Meteo (бесплатно, без ключа)</div>
+    </div>
+</div>
+
+<!-- Модальное окно с инструкцией для iOS -->
+<div id="instructionModal" class="modal">
+    <div class="modal-content">
+        <h3>📲 Как добавить на главный экран iPhone</h3>
+        <div class="modal-steps">
+            <ul style="list-style-type: decimal; padding-left: 1rem;">
+                <li>Откройте этот сайт в <strong>Safari</strong> (важно!)</li>
+                <li>Нажмите кнопку <strong>«Поделиться»</strong> <span style="background:#fff3; padding:0 0.3rem; border-radius:8px;">⎙</span> в нижней панели</li>
+                <li>Прокрутите меню и выберите <strong>«На экран «Домой»</strong></li>
+                <li>Нажмите <strong>«Добавить»</strong> — иконка появится на рабочем столе</li>
+            </ul>
+            <p style="font-size:0.75rem; margin-top:0.8rem; opacity:0.8;">⭐ Теперь приложение будет открываться как отдельное, с полноэкранным режимом.</p>
+        </div>
+        <button class="close-modal" id="closeModalBtn">Понятно, спасибо</button>
+    </div>
+</div>
+
+<script>
+    // --- вспомогательные функции ---
+    
+    // Маппинг кодов погоды Open-Meteo (WMO code) -> текст + эмодзи
+    function getWeatherEmojiAndDesc(weatherCode) {
+        const codeMap = {
+            0: { emoji: "☀️", desc: "Ясно" },
+            1: { emoji: "🌤️", desc: "В основном ясно" },
+            2: { emoji: "⛅", desc: "Переменная облачность" },
+            3: { emoji: "☁️", desc: "Пасмурно" },
+            45: { emoji: "🌫️", desc: "Туман" },
+            48: { emoji: "🌫️", desc: "Инейный туман" },
+            51: { emoji: "🌧️", desc: "Морось слабая" },
+            53: { emoji: "🌧️", desc: "Морось" },
+            55: { emoji: "🌧️", desc: "Морось сильная" },
+            56: { emoji: "🌨️", desc: "Ледяная морось" },
+            57: { emoji: "🌨️", desc: "Ледяная морось сильная" },
+            61: { emoji: "🌦️", desc: "Дождь слабый" },
+            63: { emoji: "🌧️", desc: "Дождь" },
+            65: { emoji: "🌧️💧", desc: "Дождь сильный" },
+            66: { emoji: "🌨️", desc: "Ледяной дождь" },
+            67: { emoji: "🌨️❄️", desc: "Ледяной дождь сильный" },
+            71: { emoji: "❄️", desc: "Снег слабый" },
+            73: { emoji: "❄️", desc: "Снег" },
+            75: { emoji: "❄️❄️", desc: "Снег сильный" },
+            77: { emoji: "🌨️", desc: "Снежные зерна" },
+            80: { emoji: "☔", desc: "Ливень слабый" },
+            81: { emoji: "☔🌧️", desc: "Ливень" },
+            82: { emoji: "⛈️", desc: "Ливень сильный" },
+            85: { emoji: "🌨️☁️", desc: "Снегопад слабый" },
+            86: { emoji: "❄️🌨️", desc: "Снегопад сильный" },
+            95: { emoji: "⛈️", desc: "Гроза" },
+            96: { emoji: "⛈️🌨️", desc: "Гроза с градом" },
+            99: { emoji: "⛈️🧊", desc: "Гроза сильная с градом" }
+        };
+        const fallback = { emoji: "🌡️", desc: "Погода" };
+        return codeMap[weatherCode] || fallback;
+    }
+
+    function formatTemp(temp) {
+        return Math.round(temp * 10) / 10;
+    }
+
+    async function fetchWeatherByCoords(lat, lon, cityDisplayName = null) {
+        const weatherContent = document.getElementById('weatherContent');
+        weatherContent.innerHTML = `
+            <div class="loading">
+                <div class="spinner"></div>
+                <span>Запрос погоды...</span>
+            </div>
+        `;
+        
+        try {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&timezone=auto`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`Ошибка API: ${response.status}`);
+            const data = await response.json();
+            if (!data.current) throw new Error("Не удалось получить текущие данные");
+            
+            const current = data.current;
+            const temperature = current.temperature_2m;
+            const humidity = current.relative_humidity_2m;
+            const windSpeed = current.wind_speed_10m;
+            const weatherCode = current.weather_code;
+            const { emoji, desc } = getWeatherEmojiAndDesc(weatherCode);
+            
+            let finalCity = cityDisplayName;
+            if (!finalCity) {
+                try {
+                    const geoResp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1&accept-language=ru`);
+                    const geoData = await geoResp.json();
+                    if (geoData && geoData.address) {
+                        const city = geoData.address.city || geoData.address.town || geoData.address.village || geoData.address.state || "Населенный пункт";
+                        finalCity = city;
+                    } else {
+                        finalCity = `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`;
+                    }
+                } catch (e) {
+                    finalCity = `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`;
+                }
+            }
+            
+            weatherContent.innerHTML = `
+                <div class="location">
+                    <span class="city-name">📍 ${escapeHtml(finalCity)}</span>
+                    <span style="font-size:0.9rem; background:rgba(0,0,0,0.3); padding:0.2rem 0.8rem; border-radius:30px;">🔴 сейчас</span>
+                </div>
+                <div class="weather-main">
+                    <div class="temp-section">
+                        <span class="temperature">${formatTemp(temperature)}</span>
+                        <span class="celsius">°C</span>
+                    </div>
+                    <div class="weather-icon">
+                        ${emoji} ${desc}
+                    </div>
+                </div>
+                <div class="details">
+                    <div class="detail-item">
+                        <span>💧</span>
+                        <span class="detail-label">Влажность:</span>
+                        <span class="detail-value">${humidity}%</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>🌬️</span>
+                        <span class="detail-label">Ветер:</span>
+                        <span class="detail-value">${windSpeed.toFixed(1)} м/с</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>🌡️</span>
+                        <span class="detail-label">Ощущается:</span>
+                        <span class="detail-value">—</span>
+                    </div>
+                </div>
+                <div style="font-size:0.75rem; margin-top:1rem; text-align:center; opacity:0.7;">
+                    ⚡ Источник: Open-Meteo (бесплатный прогноз)
+                </div>
+            `;
+        } catch (error) {
+            console.error("Weather fetch error:", error);
+            weatherContent.innerHTML = `
+                <div class="error-message">
+                    ⚠️ Не удалось загрузить погоду. Проверьте соединение или координаты.<br>
+                    <small>${escapeHtml(error.message)}</small>
+                </div>
+            `;
+        }
+    }
+    
+    async function getCoordinatesByCity(cityName) {
+        if (!cityName.trim()) throw new Error("Введите название города");
+        const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=ru&format=json`;
+        const response = await fetch(geocodeUrl);
+        if (!response.ok) throw new Error("Ошибка геокодинга");
+        const data = await response.json();
+        if (!data.results || data.results.length === 0) {
+            throw new Error(`Город "${cityName}" не найден. Проверьте название.`);
+        }
+        const result = data.results[0];
+        return {
+            lat: result.latitude,
+            lon: result.longitude,
+            name: result.name,
+            country: result.country
+        };
+    }
+    
+    async function fetchWeatherByCity(cityName) {
+        const weatherContent = document.getElementById('weatherContent');
+        weatherContent.innerHTML = `
+            <div class="loading">
+                <div class="spinner"></div>
+                <span>Ищем город "${escapeHtml(cityName)}"...</span>
+            </div>
+        `;
+        try {
+            const coords = await getCoordinatesByCity(cityName);
+            const displayCity = coords.name + (coords.country ? `, ${coords.country}` : '');
+            await fetchWeatherByCoords(coords.lat, coords.lon, displayCity);
+        } catch (error) {
+            console.error("City search error:", error);
+            weatherContent.innerHTML = `
+                <div class="error-message">
+                    🏙️ ${escapeHtml(error.message)}
+                </div>
+            `;
+        }
+    }
+    
+    function fetchWeatherByBrowserLocation() {
+        if (!navigator.geolocation) {
+            document.getElementById('weatherContent').innerHTML = `
+                <div class="error-message">
+                    🌐 Ваш браузер не поддерживает геолокацию. Введите город вручную.
+                </div>
+            `;
+            return;
+        }
+        
+        const weatherContent = document.getElementById('weatherContent');
+        weatherContent.innerHTML = `
+            <div class="loading">
+                <div class="spinner"></div>
+                <span>Определяем ваше местоположение...</span>
+            </div>
+        `;
+        
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                let cityNameFromCoords = null;
+                try {
+                    const geoResp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=ru`);
+                    const geoData = await geoResp.json();
+                    if (geoData && geoData.address) {
+                        const cityPart = geoData.address.city || geoData.address.town || geoData.address.village || geoData.address.hamlet;
+                        if (cityPart) cityNameFromCoords = cityPart;
+                    }
+                } catch (e) {}
+                if (!cityNameFromCoords) {
+                    cityNameFromCoords = `📍 ${lat.toFixed(2)}°, ${lon.toFixed(2)}°`;
+                }
+                await fetchWeatherByCoords(lat, lon, cityNameFromCoords);
+            },
+            (error) => {
+                let errorMsg = "Не удалось получить геолокацию. ";
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMsg += "Разрешите доступ к местоположению или введите город вручную.";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMsg += "Информация о местоположении недоступна.";
+                        break;
+                    case error.TIMEOUT:
+                        errorMsg += "Время ожидания истекло.";
+                        break;
+                    default:
+                        errorMsg += error.message;
+                }
+                document.getElementById('weatherContent').innerHTML = `
+                    <div class="error-message">
+                        📍 ${escapeHtml(errorMsg)}
+                    </div>
+                `;
+            }
+        );
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    // --- инициализация и обработчики событий ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchBtn = document.getElementById('searchBtn');
+        const locationBtn = document.getElementById('locationBtn');
+        const cityInput = document.getElementById('cityInput');
+        const howtoBtn = document.getElementById('howtoBtn');
+        const modal = document.getElementById('instructionModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        
+        searchBtn.addEventListener('click', () => {
+            const city = cityInput.value.trim();
+            if (city === "") {
+                document.getElementById('weatherContent').innerHTML = `
+                    <div class="error-message">
+                        ✏️ Введите название города.
+                    </div>
+                `;
+                return;
+            }
+            fetchWeatherByCity(city);
+        });
+        
+        locationBtn.addEventListener('click', () => {
+            fetchWeatherByBrowserLocation();
+        });
+        
+        cityInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchBtn.click();
+            }
+        });
+        
+        // Модальное окно инструкции
+        howtoBtn.addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+        closeModalBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+        
+        // Загрузка погоды по умолчанию
+        const defaultCity = cityInput.value.trim() || "Санкт-Петербург";
+        fetchWeatherByCity(defaultCity);
+    });
+</script>
+</body>
+</html>
+```
